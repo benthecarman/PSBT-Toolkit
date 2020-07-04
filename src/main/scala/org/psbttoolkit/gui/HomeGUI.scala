@@ -51,7 +51,7 @@ object HomeGUI extends JFXApp {
 
     val psbtsTab: Tab = new Tab {
       text = "PSBTs"
-      content = new PSBTsPane().view
+      content = new PSBTsPane(glassPane).view
     }
 
     val txTab: Tab = new Tab {
@@ -61,7 +61,7 @@ object HomeGUI extends JFXApp {
 
     val genTab: Tab = new Tab {
       text = "Generators"
-      content = new GeneratorsPane().view
+      content = new GeneratorsPane(glassPane).view
     }
 
     tabs = Seq(psbtsTab, txTab, genTab)

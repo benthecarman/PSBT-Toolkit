@@ -1,10 +1,13 @@
 package org.psbttoolkit.gui.generators
 
+import org.psbttoolkit.gui.TaskRunner
 import scalafx.geometry.Orientation
 import scalafx.scene.control.{Separator, TextArea}
-import scalafx.scene.layout.{BorderPane, HBox}
+import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
-class GeneratorsPane {
+class GeneratorsPane(glassPane: VBox) {
+
+  private val model = new GeneratorPaneModel
 
   private val resultArea = new TextArea {
     editable = false
@@ -13,15 +16,15 @@ class GeneratorsPane {
     promptText = "Generated Data"
   }
 
+  private val genButtons = new GeneratorButtons(model)
+
   private val txSide = new HBox {
-    children =
-      List(GeneratorButtons.txGenSelector, GeneratorButtons.txGenButton)
+    children = List(genButtons.txGenSelector, genButtons.txGenButton)
     spacing = 10
   }
 
   private val psbtSide = new HBox {
-    children =
-      List(GeneratorButtons.psbtGenSelector, GeneratorButtons.psbtGenButton)
+    children = List(genButtons.psbtGenSelector, genButtons.psbtGenButton)
     spacing = 10
   }
 
@@ -41,4 +44,7 @@ class GeneratorsPane {
 
   buttonPane.prefHeight <== (view.height * 2) / 3
   resultArea.prefHeight <== (view.height / 3)
+
+  private val taskRunner = new TaskRunner(buttonPane, glassPane)
+  model.taskRunner = taskRunner
 }
