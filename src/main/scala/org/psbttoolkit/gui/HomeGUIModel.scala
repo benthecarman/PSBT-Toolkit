@@ -1,6 +1,6 @@
 package org.psbttoolkit.gui
 
-import org.psbttoolkit.gui.dialog.GetNewAddressDialog
+import org.psbttoolkit.gui.dialog.AboutDialog
 import scalafx.beans.property.{ObjectProperty, StringProperty}
 import scalafx.stage.Window
 
@@ -12,10 +12,8 @@ class HomeGUIModel() {
   val parentWindow: ObjectProperty[Window] =
     ObjectProperty[Window](null.asInstanceOf[Window])
 
-  def onGetNewAddress(): Unit = {
-    val address = StringProperty("")
-
-    GetNewAddressDialog.showAndWait(parentWindow.value, address)
+  def onAbout(): Unit = {
+    AboutDialog.showAndWait(parentWindow.value)
   }
 
 }

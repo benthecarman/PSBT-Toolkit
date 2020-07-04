@@ -72,7 +72,7 @@ object HomeGUI extends JFXApp {
   private val model = new HomeGUIModel()
 
   private val borderPane = new BorderPane {
-    top = AppMenuBar.menuBar
+    top = AppMenuBar.menuBar(model)
     center = tabPane
     bottom = statusLabel
   }

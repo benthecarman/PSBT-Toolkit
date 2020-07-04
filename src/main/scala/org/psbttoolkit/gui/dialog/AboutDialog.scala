@@ -2,29 +2,22 @@ package org.psbttoolkit.gui.dialog
 
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
-import scalafx.beans.property.StringProperty
 import scalafx.scene.control.{ButtonType, Dialog, TextArea}
 import scalafx.stage.Window
 
-object GetNewAddressDialog {
+object AboutDialog {
 
-  def showAndWait(parentWindow: Window, address: String): Unit = {
-    showAndWait(parentWindow, StringProperty(address))
-  }
-
-  def showAndWait(parentWindow: Window, address: StringProperty): Unit = {
+  def showAndWait(parentWindow: Window): Unit = {
     val dialog = new Dialog[Unit]() {
       initOwner(parentWindow)
-      title = "New Address"
+      title = "About"
     }
-
-    // TODO make a button to copy the address to clipboard
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
     dialog.dialogPane().content = new TextArea {
-      text <== address
+      text = "I haven't written this yet, but remember to stack sats"
       editable = false
     }
 

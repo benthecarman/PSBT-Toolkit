@@ -5,9 +5,11 @@ import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 
 object AppMenuBar {
 
-  val menuBar: MenuBar = new MenuBar {
-    menus = List(FileMenu.fileMenu, ViewMenu.viewMenu, HelpMenu.helpMenu)
-  }
+  def menuBar(model: HomeGUIModel): MenuBar =
+    new MenuBar {
+      menus =
+        List(FileMenu.fileMenu, ViewMenu.viewMenu, HelpMenu.helpMenu(model))
+    }
 }
 
 private object FileMenu {
@@ -36,11 +38,14 @@ private object ViewMenu {
 
 private object HelpMenu {
 
-  private val about = new MenuItem("About") {
-    onAction = _ => println("About") //todo
-  }
+  private def about(model: HomeGUIModel) =
+    new MenuItem("About") {
+      accelerator = new KeyCodeCombination(KeyCode.F1) // F1
+      onAction = _ => model.onAbout()
+    }
 
-  val helpMenu: Menu = new Menu("Help") {
-    items = List(about)
-  }
+  def helpMenu(model: HomeGUIModel): Menu =
+    new Menu("Help") {
+      items = List(about(model))
+    }
 }
