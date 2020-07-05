@@ -2,6 +2,7 @@ package org.psbttoolkit.gui.psbts
 
 import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.TaskRunner
+import org.psbttoolkit.gui.dialog.AddSignatureDialog
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
@@ -34,6 +35,28 @@ class PSBTsPaneModel(resultArea: TextArea) {
               setResult(finalized.base64)
             case Failure(exception) =>
               throw exception
+          }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
+  def addSignature(): Unit = {
+    val resultOpt = getPSBTOpt.flatMap { psbt =>
+      AddSignatureDialog.showAndWait(psbt.inputMaps.size, parentWindow.value)
+    }
+
+    taskRunner.run(
+      caption = "Add Signature",
+      op = getPSBTOpt match {
+        case Some(psbt) =>
+          resultOpt match {
+            case Some((index, pubKey, sig)) =>
+              val addedSig = psbt.addSignature(pubKey, sig, index)
+              setResult(addedSig.base64)
+            case None =>
+              ()
           }
         case None =>
           throw new RuntimeException("Missing PSBT")
