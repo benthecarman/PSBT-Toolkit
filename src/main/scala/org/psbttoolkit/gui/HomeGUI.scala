@@ -56,7 +56,7 @@ object HomeGUI extends JFXApp {
 
     val txTab: Tab = new Tab {
       text = "Transactions"
-      content = new TransactionsPane().view
+      content = new TransactionsPane(glassPane).view
     }
 
     val genTab: Tab = new Tab {

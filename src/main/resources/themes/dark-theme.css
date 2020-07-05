@@ -13,7 +13,7 @@
 }
 
 /** Customization of the bar where the buttons are located**/
-.dialog > .dialog-pane > .button-bar {
+.dialog-pane > .button-bar > .container {
   -fx-background-color: #373e43;
   -fx-base: #373e43;
 }
@@ -22,7 +22,7 @@
     -fx-text-fill: white;
 }
 
-.titulo{
+.titulo {
     -fx-font-weight: bold;
     -fx-font-size: 18px;
 }

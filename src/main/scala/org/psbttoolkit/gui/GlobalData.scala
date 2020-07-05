@@ -1,5 +1,6 @@
 package org.psbttoolkit.gui
 
+import org.bitcoins.core.config._
 import org.psbttoolkit.gui.settings.Themes
 import scalafx.beans.property.StringProperty
 
@@ -17,4 +18,5 @@ object GlobalData {
       Seq.empty
     }
 
+  var network: BitcoinNetwork = TestNet3
 }

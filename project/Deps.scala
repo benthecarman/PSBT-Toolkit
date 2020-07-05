@@ -18,6 +18,8 @@ object Deps {
 
   object Compile {
 
+    val scalaj = "org.scalaj" % "scalaj-http_2.11" % "2.3.0"
+
     val bitcoins =
       "org.bitcoin-s" %% "bitcoin-s-core" % V.bitcoinsV withSources () withJavadoc ()
 
@@ -62,6 +64,7 @@ object Deps {
 
   val gui: List[ModuleID] = List(Compile.bitcoins,
                                  Compile.bitcoinsTestKit,
+                                 Compile.scalaj,
                                  Compile.scalaFx,
                                  Compile.scodec) ++ Compile.javaFxDeps
 }

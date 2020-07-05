@@ -2,8 +2,9 @@ package org.psbttoolkit.gui
 
 import scalafx.application.Platform
 import scalafx.scene.Node
+import scalafx.Includes._
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.Alert
+import scalafx.scene.control.{Alert, ButtonType, Dialog}
 
 /**
   * Runs a background task disabling the `mainView` and main visible `glassPane`.
@@ -61,6 +62,7 @@ class TaskRunner(mainView: Node, glassPane: Node) {
             .map("Exception: " + _.getClass)
             .getOrElse("")
           contentText = t.map(_.getMessage).getOrElse("")
+          dialogPane().stylesheets = GlobalData.currentStyleSheets
         }.showAndWait()
       }
       override def cancelled(): Unit = {
