@@ -1,10 +1,10 @@
 package org.psbttoolkit.gui
 
+import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.scene.Node
-import scalafx.Includes._
+import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
-import scalafx.scene.control.{Alert, ButtonType, Dialog}
 
 /**
   * Runs a background task disabling the `mainView` and main visible `glassPane`.
@@ -40,14 +40,13 @@ class TaskRunner(mainView: Node, glassPane: Node) {
     }
 
     val task = new javafx.concurrent.Task[R] {
-      override def call(): R = {
-        op
-      }
+      override def call(): R = op
+
       override def succeeded(): Unit = {
         showProgress(false)
         GlobalData.statusText.value = caption + " - Done."
-        // Do callback, if defined
       }
+
       override def failed(): Unit = {
 
         showProgress(false)
@@ -65,6 +64,7 @@ class TaskRunner(mainView: Node, glassPane: Node) {
           dialogPane().stylesheets = GlobalData.currentStyleSheets
         }.showAndWait()
       }
+
       override def cancelled(): Unit = {
         showProgress(false)
         GlobalData.statusText.value = caption + " - Cancelled."
