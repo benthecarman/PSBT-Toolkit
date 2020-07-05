@@ -41,35 +41,35 @@ object HomeGUI extends JFXApp {
     text <== GlobalData.statusText
   }
 
-  private val resultArea = new TextArea {
-    editable = false
-    wrapText = true
-    text = "Welcome"
+  val psbtPane = new PSBTsPane(glassPane)
+
+  val psbtTab: Tab = new Tab {
+    text = "PSBTs"
+    content = psbtPane.view
+  }
+
+  val txPane = new TransactionsPane(glassPane)
+
+  val txTab: Tab = new Tab {
+    text = "Transactions"
+    content = txPane.view
+  }
+
+  val genPane = new GeneratorsPane(glassPane)
+
+  val genTab: Tab = new Tab {
+    text = "Generators"
+    content = genPane.view
   }
 
   private val tabPane: TabPane = new TabPane() {
 
-    val psbtsTab: Tab = new Tab {
-      text = "PSBTs"
-      content = new PSBTsPane(glassPane).view
-    }
-
-    val txTab: Tab = new Tab {
-      text = "Transactions"
-      content = new TransactionsPane(glassPane).view
-    }
-
-    val genTab: Tab = new Tab {
-      text = "Generators"
-      content = new GeneratorsPane(glassPane).view
-    }
-
-    tabs = Seq(psbtsTab, txTab, genTab)
+    tabs = Seq(psbtTab, txTab, genTab)
 
     tabClosingPolicy = TabClosingPolicy.Unavailable
   }
 
-  private val model = new HomeGUIModel()
+  private val model = new HomeGUIModel(psbtPane, txPane, genPane)
 
   private val borderPane = new BorderPane {
     top = AppMenuBar.menuBar(model)
@@ -91,7 +91,4 @@ object HomeGUI extends JFXApp {
     scene = homeScene
     icons.add(new Image("/icons/psbt-toolkit.png"))
   }
-
-  private val taskRunner = new TaskRunner(resultArea, glassPane)
-  model.taskRunner = taskRunner
 }

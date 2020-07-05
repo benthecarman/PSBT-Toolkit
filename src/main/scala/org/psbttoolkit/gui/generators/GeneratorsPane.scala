@@ -7,7 +7,7 @@ import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
 class GeneratorsPane(glassPane: VBox) {
 
-  private val model = new GeneratorPaneModel
+  val model = new GeneratorPaneModel
 
   private val resultArea = new TextArea {
     editable = false
