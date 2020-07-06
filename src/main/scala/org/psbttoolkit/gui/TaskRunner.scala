@@ -6,6 +6,8 @@ import scalafx.scene.Node
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
 
+import scala.concurrent.Future
+
 /**
   * Runs a background task disabling the `mainView` and main visible `glassPane`.
   * Shows statis using `statusLabel`.

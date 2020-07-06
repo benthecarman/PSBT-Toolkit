@@ -10,6 +10,10 @@ object Deps {
   }
 
   object V {
+    val akkav = "10.1.12"
+    val akkaStreamv = "2.6.6"
+    val akkaActorV = akkaStreamv
+
     val scodecV = "1.1.17"
     val scalaFxV = "14-R19"
     val bitcoinsV = "0.3.0+244-fc29b08c+20200702-1752-SNAPSHOT"
@@ -18,7 +22,14 @@ object Deps {
 
   object Compile {
 
-    val scalaj = "org.scalaj" % "scalaj-http_2.11" % "2.3.0"
+    val akkaHttp =
+      "com.typesafe.akka" %% "akka-http" % V.akkav withSources () withJavadoc ()
+
+    val akkaStream =
+      "com.typesafe.akka" %% "akka-stream" % V.akkaStreamv withSources () withJavadoc ()
+
+    val akkaActor =
+      "com.typesafe.akka" %% "akka-actor" % V.akkaStreamv withSources () withJavadoc ()
 
     val bitcoins =
       "org.bitcoin-s" %% "bitcoin-s-core" % V.bitcoinsV withSources () withJavadoc ()
@@ -62,9 +73,11 @@ object Deps {
       "org.scodec" %% "scodec-bits" % V.scodecV withSources () withJavadoc ()
   }
 
-  val gui: List[ModuleID] = List(Compile.bitcoins,
+  val gui: List[ModuleID] = List(Compile.akkaActor,
+                                 Compile.akkaHttp,
+                                 Compile.akkaStream,
+                                 Compile.bitcoins,
                                  Compile.bitcoinsTestKit,
-                                 Compile.scalaj,
                                  Compile.scalaFx,
                                  Compile.scodec) ++ Compile.javaFxDeps
 }

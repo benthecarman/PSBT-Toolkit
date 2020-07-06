@@ -1,15 +1,21 @@
 package org.psbttoolkit.gui.transactions
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.client.RequestBuilding.Post
+import akka.stream.ActorMaterializer
+import akka.util.ByteString
 import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
+import org.bitcoins.core.util.FutureUtil
 import org.bitcoins.server.SerializedTransaction
 import org.psbttoolkit.gui.dialog.DecodeTransactionDialog
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
-import scalaj.http.Http
 
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.Try
 
 class TransactionsPaneModel(resultArea: TextArea) {
@@ -28,22 +34,36 @@ class TransactionsPaneModel(resultArea: TextArea) {
     Try(Transaction.fromHex(resultArea.text.value)).toOption
   }
 
-  def broadcastTx(): Unit = {
+  def broadcastTx()(implicit system: ActorSystem): Unit = {
+    implicit val m: ActorMaterializer = ActorMaterializer.create(system)
+    implicit val ec: ExecutionContextExecutor = m.executionContext
+
     taskRunner.run(
-      caption = "Finalize PSBT",
+      caption = "Broadcast Transaction",
       op = getTransactionOpt match {
         case Some(tx) =>
           val url = GlobalData.network match {
             case MainNet =>
-              "http://blockstream.info/api/tx"
+              "https://blockstream.info/api/tx"
             case TestNet3 =>
-              "http://blockstream.info/testnet/api/tx"
+              "https://blockstream.info/testnet/api/tx"
             case RegTest =>
               throw new IllegalArgumentException(
                 "Unable broadcast a regtest transaction")
           }
-          val result = Http(url).postData(tx.hex)
-          println(result)
+
+          val resultF = Http()
+            .singleRequest(Post(url, tx.hex))
+            .flatMap(response =>
+              response.entity.dataBytes
+                .runFold(ByteString.empty)(_ ++ _)
+                .map(payload => payload.decodeString(ByteString.UTF_8)))
+
+          resultF.map { result =>
+            if (result != tx.txIdBE.hex) {
+              throw new RuntimeException(result)
+            }
+          }
         case None =>
           throw new RuntimeException("Missing Transaction")
       }
