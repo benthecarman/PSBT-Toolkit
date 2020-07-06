@@ -217,4 +217,26 @@ class PSBTsPaneModel(resultArea: TextArea) {
       }
     )
   }
+
+  def extractTransaction(): Unit = {
+    val resultOpt = getPSBTOpt.map { psbt =>
+      val validityT = psbt.extractTransactionAndValidate
+      val (tx, errorOpt) = validityT match {
+        case Success(tx) => (tx, None)
+        case Failure(err) =>
+          (psbt.extractTransaction, Some(err))
+      }
+      ExtractTransactionDialog.showAndWait(parentWindow.value, tx, errorOpt)
+    }
+
+    taskRunner.run(
+      caption = "Extract Transaction",
+      op = getPSBTOpt match {
+        case Some(_) =>
+          resultOpt.map(_ => ())
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
 }

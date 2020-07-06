@@ -55,5 +55,9 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.finalizePSBT()
   }
 
-  val generalButtons: Vector[Button] = Vector(finalizePSBT)
+  private val extractTx: Button = new Button("Extract Transaction") {
+    onAction = _ => model.extractTransaction()
+  }
+
+  val generalButtons: Vector[Button] = Vector(finalizePSBT, extractTx)
 }
