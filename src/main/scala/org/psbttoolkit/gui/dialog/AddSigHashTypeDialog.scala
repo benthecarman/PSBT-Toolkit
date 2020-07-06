@@ -1,36 +1,30 @@
 package org.psbttoolkit.gui.dialog
 
-import org.bitcoins.crypto.{ECDigitalSignature, ECPublicKey}
+import org.bitcoins.core.script.crypto.HashType
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
 import scalafx.application.Platform
-import scalafx.beans.property.BooleanProperty
 import scalafx.geometry.Insets
-import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
+import scalafx.scene.Node
+import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
 
-import scala.util.Try
+object AddSigHashTypeDialog {
 
-object AddSignatureDialog {
-
-  def showAndWait(
-      parentWindow: Window): Option[(Int, ECPublicKey, ECDigitalSignature)] = {
-    val dialog = new Dialog[Option[(Int, ECPublicKey, ECDigitalSignature)]]() {
+  def showAndWait(parentWindow: Window): Option[(Int, HashType)] = {
+    val dialog = new Dialog[Option[(Int, HashType)]]() {
       initOwner(parentWindow)
-      title = "Add Signature"
+      title = "Add SigHash Type"
     }
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK, ButtonType.Cancel)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
+    val hashTypes = HashType.hashTypes
+
     val indexTF = new TextField()
-    val pubKeyTF = new TextField() {
-      promptText = "Serialized in hex"
-    }
-    val signatureTF = new TextField() {
-      promptText = "Serialized in hex"
-    }
+    val sigHashCB = new ComboBox(hashTypes)
 
     dialog.dialogPane().content = new GridPane {
       hgap = 10
@@ -38,21 +32,21 @@ object AddSignatureDialog {
       padding = Insets(20, 100, 10, 10)
 
       var nextRow: Int = 0
-      def addRow(label: String, textField: TextField): Unit = {
+
+      def addRow(label: String, node: Node): Unit = {
         add(new Label(label), 0, nextRow)
-        add(textField, 1, nextRow)
+        add(node, 1, nextRow)
         nextRow += 1
       }
 
       addRow("Input Index", indexTF)
-      addRow("Public Key", pubKeyTF)
-      addRow("Signature", signatureTF)
+      addRow("Sig Hash Type", sigHashCB)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== indexTF.text.isEmpty || pubKeyTF.text.isEmpty || signatureTF.text.isEmpty
+    okButton.disable <== indexTF.text.isEmpty
 
     Platform.runLater(indexTF.requestFocus())
 
@@ -61,14 +55,12 @@ object AddSignatureDialog {
       if (dialogButton == ButtonType.OK) {
         Some(
           (indexTF.text.value.toInt,
-           ECPublicKey(pubKeyTF.text.value),
-           ECDigitalSignature(signatureTF.text.value)))
+           sigHashCB.value.value.asInstanceOf[HashType]))
       } else None
 
     dialog.showAndWait() match {
-      case Some(
-            Some((index: Int, pubKey: ECPublicKey, sig: ECDigitalSignature))) =>
-        Some((index, pubKey, sig))
+      case Some(Some((index: Int, hashType: HashType))) =>
+        Some((index, hashType))
       case Some(_) | None => None
     }
   }

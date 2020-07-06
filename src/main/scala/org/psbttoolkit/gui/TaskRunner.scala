@@ -48,7 +48,6 @@ class TaskRunner(mainView: Node, glassPane: Node) {
       }
 
       override def failed(): Unit = {
-
         showProgress(false)
         GlobalData.statusText.value = caption + " - Failed."
         val t = Option(getException)

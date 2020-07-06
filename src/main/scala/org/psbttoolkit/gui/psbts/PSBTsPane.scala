@@ -43,7 +43,7 @@ class PSBTsPane(glassPane: VBox) {
   }
 
   val buttonPane: HBox = new HBox {
-    spacing = 100
+    spacing = 10
     children = Vector(globalCol, inputCol, outputCol, generalCol)
   }
 
