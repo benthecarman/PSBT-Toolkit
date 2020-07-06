@@ -2,6 +2,7 @@ package org.psbttoolkit.gui
 
 import java.nio.file.Files
 
+import org.bitcoins.core.config.{BitcoinNetworks, MainNet, TestNet3}
 import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.util.FileUtil
 import scalafx.scene.control._
@@ -55,10 +56,38 @@ private class FileMenu(model: HomeGUIModel) {
     }
   }
 
+  private val network: Menu = new Menu("_Network") {
+    mnemonicParsing = true
+
+    private val networkToggle: ToggleGroup = new ToggleGroup()
+
+    private val mainnetToggle: RadioMenuItem = new RadioMenuItem("Mainnet") {
+      toggleGroup = networkToggle
+      selected = GlobalData.network == MainNet
+      id = MainNet.toString
+    }
+
+    private val testnetToggle: RadioMenuItem = new RadioMenuItem("Testnet") {
+      toggleGroup = networkToggle
+      selected = GlobalData.network == TestNet3
+      id = TestNet3.toString
+    }
+
+    items = List(mainnetToggle, testnetToggle)
+
+    onAction = _ => {
+      val selectedId = networkToggle.selectedToggle.value
+        .asInstanceOf[javafx.scene.control.RadioMenuItem]
+        .getId
+
+      GlobalData.network = BitcoinNetworks.fromString(selectedId.toLowerCase)
+    }
+  }
+
   val fileMenu: Menu =
     new Menu("_File") {
       mnemonicParsing = true
-      items = List(loadPSBT, exportPSBT)
+      items = List(loadPSBT, exportPSBT, new SeparatorMenuItem, network)
     }
 }
 
