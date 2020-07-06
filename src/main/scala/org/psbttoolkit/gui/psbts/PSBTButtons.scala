@@ -4,7 +4,19 @@ import scalafx.scene.control.Button
 
 class PSBTButtons(model: PSBTsPaneModel) {
 
-  val globalButtons: Vector[Button] = Vector()
+  private val addXPub: Button = new Button("Add XPub") {
+    onAction = _ => model.addGlobalXPub()
+  }
+
+  private val setVersion: Button = new Button("Set Version") {
+    onAction = _ => model.setVersion()
+  }
+
+  val globalButtons: Vector[Button] = Vector(addXPub, setVersion)
+
+  private val finalizeInput: Button = new Button("Finalize Input") {
+    onAction = _ => model.finalizeInput()
+  }
 
   private val addSignature: Button = new Button("Add Signature") {
     onAction = _ => model.addSignature()
@@ -32,7 +44,8 @@ class PSBTButtons(model: PSBTsPaneModel) {
   }
 
   val inputButtons: Seq[Button] =
-    Vector(addNonWitnessUTXO,
+    Vector(finalizeInput,
+           addNonWitnessUTXO,
            addWitnessUTXO,
            addSignature,
            addInputRedeemScript,

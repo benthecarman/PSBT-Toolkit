@@ -1,6 +1,7 @@
 package org.psbttoolkit.gui.psbts
 
-import org.bitcoins.core.psbt.PSBT
+import org.bitcoins.core.psbt.GlobalPSBTRecord.{Version, XPubKey}
+import org.bitcoins.core.psbt.{GlobalPSBTMap, PSBT, PSBTGlobalKeyId}
 import org.psbttoolkit.gui.TaskRunner
 import org.psbttoolkit.gui.dialog._
 import scalafx.beans.property.ObjectProperty
@@ -218,6 +219,32 @@ class PSBTsPaneModel(resultArea: TextArea) {
     )
   }
 
+  def finalizeInput(): Unit = {
+    val resultOpt = getPSBTOpt.flatMap { _ =>
+      FinalizeInputDialog.showAndWait(parentWindow.value)
+    }
+
+    taskRunner.run(
+      caption = "Finalize Input",
+      op = getPSBTOpt match {
+        case Some(psbt) =>
+          resultOpt match {
+            case Some(index) =>
+              psbt.finalizeInput(index) match {
+                case Success(finalized) =>
+                  setResult(finalized.base64)
+                case Failure(exception) =>
+                  throw exception
+              }
+            case None =>
+              ()
+          }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
   def extractTransaction(): Unit = {
     val resultOpt = getPSBTOpt.map { psbt =>
       val validityT = psbt.extractTransactionAndValidate
@@ -234,6 +261,57 @@ class PSBTsPaneModel(resultArea: TextArea) {
       op = getPSBTOpt match {
         case Some(_) =>
           resultOpt.map(_ => ())
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
+  def setVersion(): Unit = {
+    val resultOpt = getPSBTOpt.flatMap { _ =>
+      SetVersionDialog.showAndWait(parentWindow.value)
+    }
+
+    taskRunner.run(
+      caption = "Set PSBT Version",
+      op = getPSBTOpt match {
+        case Some(psbt) =>
+          resultOpt match {
+            case Some(version) =>
+              val oldGlobal = psbt.globalMap.filterNot(rec =>
+                PSBTGlobalKeyId(rec.key) == PSBTGlobalKeyId.VersionKeyId)
+              val newGlobal =
+                GlobalPSBTMap((oldGlobal :+ Version(version)).toVector)
+              val updated = PSBT(newGlobal, psbt.inputMaps, psbt.outputMaps)
+              setResult(updated.base64)
+            case None =>
+              ()
+          }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
+  def addGlobalXPub(): Unit = {
+    val resultOpt = getPSBTOpt.flatMap { _ =>
+      AddGlobalXPubKey.showAndWait(parentWindow.value)
+    }
+
+    taskRunner.run(
+      caption = "Add Global XPub Key",
+      op = getPSBTOpt match {
+        case Some(psbt) =>
+          resultOpt match {
+            case Some((xpub, fingerprint, path)) =>
+              val newGlobal =
+                GlobalPSBTMap(
+                  (psbt.globalMap :+ XPubKey(xpub, fingerprint, path)).toVector)
+              val updated = PSBT(newGlobal, psbt.inputMaps, psbt.outputMaps)
+              setResult(updated.base64)
+            case None =>
+              ()
+          }
         case None =>
           throw new RuntimeException("Missing PSBT")
       }
