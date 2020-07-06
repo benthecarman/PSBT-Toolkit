@@ -64,6 +64,10 @@ class PSBTButtons(model: PSBTsPaneModel) {
   val outputButtons: Vector[Button] =
     Vector(addOutputRedeemScript, addOutputKeyPath)
 
+  private val fromUnsignedTx: Button = new Button("From Unsigned Transaction") {
+    onAction = _ => model.fromUnsignedTransaction()
+  }
+
   private val finalizePSBT: Button = new Button("Finalize PSBT") {
     onAction = _ => model.finalizePSBT()
   }
@@ -72,5 +76,6 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.extractTransaction()
   }
 
-  val generalButtons: Vector[Button] = Vector(finalizePSBT, extractTx)
+  val generalButtons: Vector[Button] =
+    Vector(fromUnsignedTx, finalizePSBT, extractTx)
 }

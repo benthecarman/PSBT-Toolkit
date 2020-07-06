@@ -267,6 +267,26 @@ class PSBTsPaneModel(resultArea: TextArea) {
     )
   }
 
+  def fromUnsignedTransaction(): Unit = {
+    val resultOpt = PSBTFromUnsignedTransaction.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Create PSBT from unsigned transaction",
+      op = resultOpt match {
+        case Some(txT) =>
+          txT match {
+            case Success(tx) =>
+              val psbt = PSBT.fromUnsignedTx(tx)
+              setResult(psbt.base64)
+            case Failure(_) =>
+              throw new RuntimeException("Transaction not correctly serialized")
+          }
+        case None =>
+          ()
+      }
+    )
+  }
+
   def setVersion(): Unit = {
     val resultOpt = getPSBTOpt.flatMap { _ =>
       SetVersionDialog.showAndWait(parentWindow.value)

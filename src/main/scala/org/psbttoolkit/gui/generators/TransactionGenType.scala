@@ -16,13 +16,20 @@ object TransactionGenType {
     override def toString: String = "Witness Transaction"
   }
 
+  final case object UnsignedTransaction extends TransactionGenType {
+    override def toString: String = "Unsigned Transaction"
+  }
+
   val all: Vector[TransactionGenType] =
-    Vector(ArbitraryTransaction, BaseTransaction, WitnessTransaction)
+    Vector(ArbitraryTransaction,
+           BaseTransaction,
+           WitnessTransaction,
+           UnsignedTransaction)
 
   val names: Vector[String] = all.map(_.toString)
 
   def fromStringOpt(str: String): Option[TransactionGenType] = {
-    all.find(_.toString.toLowerCase == str.toLowerCase())
+    all.find(_.toString.toLowerCase == str.toLowerCase)
   }
 
   def fromString(str: String): TransactionGenType = {

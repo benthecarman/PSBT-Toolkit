@@ -1,5 +1,6 @@
 package org.psbttoolkit.gui.generators
 
+import org.bitcoins.core.protocol.transaction.TxUtil
 import org.bitcoins.testkit.Implicits._
 import org.bitcoins.testkit.core.gen.{PSBTGenerators, TransactionGenerators}
 import org.psbttoolkit.gui.TaskRunner
@@ -49,6 +50,10 @@ class GeneratorPaneModel() {
             TransactionGenerators.baseTransaction.sampleSome.hex
           case WitnessTransaction =>
             TransactionGenerators.witnessTransaction.sampleSome.hex
+          case UnsignedTransaction =>
+            val signedTx = TransactionGenerators.transaction.sampleSome
+            val unsignedTx = TxUtil.emptyAllScriptSigs(signedTx)
+            unsignedTx.hex
         }
         GeneratorData.generatedData.value = data
       }
