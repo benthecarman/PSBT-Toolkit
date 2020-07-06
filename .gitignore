@@ -86,3 +86,4 @@ website/static/api
 
 #OSX
 .DS_Store
+/.idea/

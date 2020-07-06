@@ -1,8 +1,9 @@
 package org.psbttoolkit.gui.psbts
 
 import org.psbttoolkit.gui.TaskRunner
-import scalafx.scene.control.TextArea
-import scalafx.scene.layout.{BorderPane, TilePane, VBox}
+import scalafx.geometry.Insets
+import scalafx.scene.control.{Label, Separator, TextArea}
+import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
 class PSBTsPane(glassPane: VBox) {
 
@@ -17,11 +18,38 @@ class PSBTsPane(glassPane: VBox) {
 
   val psbtButtons = new PSBTButtons(model)
 
-  private val buttonPane = new TilePane {
-    children = psbtButtons.all
+  val globalCol: VBox = new VBox {
+    spacing = 10
+    children = Vector(new Label("Global Functions"),
+                      new Separator) ++ psbtButtons.globalButtons
+  }
+
+  val inputCol: VBox = new VBox {
+    spacing = 10
+    children = Vector(new Label("Input Functions"),
+                      new Separator) ++ psbtButtons.inputButtons
+  }
+
+  val outputCol: VBox = new VBox {
+    spacing = 10
+    children = Vector(new Label("Output Functions"),
+                      new Separator) ++ psbtButtons.outputButtons
+  }
+
+  val generalCol: VBox = new VBox {
+    spacing = 10
+    children = Vector(new Label("General Functions"),
+                      new Separator) ++ psbtButtons.generalButtons
+  }
+
+  val buttonPane: HBox = new HBox {
+    spacing = 100
+    children = Vector(globalCol, inputCol, outputCol, generalCol)
   }
 
   val view: BorderPane = new BorderPane {
+    padding = Insets(top = 20, right = 10, bottom = 10, left = 10)
+
     center = buttonPane
     bottom = resultArea
   }
@@ -29,6 +57,6 @@ class PSBTsPane(glassPane: VBox) {
   buttonPane.prefHeight <== (view.height * 2) / 3
   resultArea.prefHeight <== (view.height / 3)
 
-  private val taskRunner = new TaskRunner(buttonPane, glassPane)
+  private val taskRunner = new TaskRunner(view, glassPane)
   model.taskRunner = taskRunner
 }

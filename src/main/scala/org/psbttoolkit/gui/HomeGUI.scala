@@ -90,5 +90,7 @@ object HomeGUI extends JFXApp {
     title = "PSBT Toolkit"
     scene = homeScene
     icons.add(new Image("/icons/psbt-toolkit.png"))
+    minHeight = 400
+    minWidth = 400
   }
 }

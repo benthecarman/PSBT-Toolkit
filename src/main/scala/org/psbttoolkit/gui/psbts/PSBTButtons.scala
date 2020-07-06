@@ -12,5 +12,11 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.finalizePSBT()
   }
 
-  val all: Vector[Button] = Vector(finalizePSBT, addSignature)
+  val globalButtons: Vector[Button] = Vector()
+
+  val inputButtons: Seq[Button] = Vector(addSignature, addSignature)
+
+  val outputButtons: Vector[Button] = Vector()
+
+  val generalButtons: Vector[Button] = Vector(finalizePSBT)
 }
