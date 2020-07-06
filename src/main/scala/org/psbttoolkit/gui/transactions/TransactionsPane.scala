@@ -1,6 +1,7 @@
 package org.psbttoolkit.gui.transactions
 
 import org.psbttoolkit.gui.TaskRunner
+import scalafx.geometry.Insets
 import scalafx.scene.control.TextArea
 import scalafx.scene.layout.{BorderPane, TilePane, VBox}
 
@@ -22,6 +23,8 @@ class TransactionsPane(glassPane: VBox) {
   }
 
   val view: BorderPane = new BorderPane {
+    padding = Insets(top = 20, right = 10, bottom = 10, left = 10)
+
     center = buttonPane
     bottom = resultArea
   }

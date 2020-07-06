@@ -1,7 +1,7 @@
 package org.psbttoolkit.gui.generators
 
 import org.psbttoolkit.gui.TaskRunner
-import scalafx.geometry.{Orientation, Pos}
+import scalafx.geometry.{Insets, Orientation, Pos}
 import scalafx.scene.control.{Label, Separator, TextArea}
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
@@ -53,6 +53,8 @@ class GeneratorsPane(glassPane: VBox) {
   }
 
   val view: BorderPane = new BorderPane {
+    padding = Insets(top = 20, right = 10, bottom = 10, left = 10)
+
     center = buttonPane
     bottom = resultArea
   }
