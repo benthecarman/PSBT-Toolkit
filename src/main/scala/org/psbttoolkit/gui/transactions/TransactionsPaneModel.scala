@@ -2,6 +2,8 @@ package org.psbttoolkit.gui.transactions
 
 import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
+import org.bitcoins.server.SerializedTransaction
+import org.psbttoolkit.gui.dialog.DecodeTransactionDialog
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
@@ -42,6 +44,23 @@ class TransactionsPaneModel(resultArea: TextArea) {
           }
           val result = Http(url).postData(tx.hex)
           println(result)
+        case None =>
+          throw new RuntimeException("Missing Transaction")
+      }
+    )
+  }
+
+  def decodeTransaction(): Unit = {
+    val resultOpt = getTransactionOpt.map { tx =>
+      val decoded = SerializedTransaction.decodeRawTransaction(tx)
+      DecodeTransactionDialog.showAndWait(parentWindow.value, decoded)
+    }
+
+    taskRunner.run(
+      caption = "Decode Transaction",
+      op = getTransactionOpt match {
+        case Some(_) =>
+          resultOpt.map(_ => ())
         case None =>
           throw new RuntimeException("Missing Transaction")
       }
