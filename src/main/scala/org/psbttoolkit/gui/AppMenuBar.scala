@@ -20,7 +20,7 @@ object AppMenuBar {
 
 private class FileMenu(model: HomeGUIModel) {
 
-  private val loadPSBT = new MenuItem("Load PSBT") {
+  private val loadPSBT = new MenuItem("_Load PSBT") {
     accelerator =
       new KeyCodeCombination(KeyCode.O, KeyCombination.ControlDown) // CTRL + O
     onAction = _ => {
@@ -36,7 +36,7 @@ private class FileMenu(model: HomeGUIModel) {
     }
   }
 
-  private val exportPSBT = new MenuItem("Export PSBT") {
+  private val exportPSBT = new MenuItem("_Export PSBT") {
     accelerator =
       new KeyCodeCombination(KeyCode.S, KeyCombination.ControlDown) // CTRL + S
     onAction = _ => {
@@ -56,7 +56,7 @@ private class FileMenu(model: HomeGUIModel) {
   }
 
   val fileMenu: Menu =
-    new Menu("File") {
+    new Menu("_File") {
       mnemonicParsing = true
       items = List(loadPSBT, exportPSBT)
     }
@@ -66,18 +66,18 @@ private class ViewMenu(model: HomeGUIModel) {
 
   private val themeToggle: ToggleGroup = new ToggleGroup()
 
-  private val themes: Menu = new Menu("Themes") {
+  private val themes: Menu = new Menu("_Themes") {
     mnemonicParsing = true
 
     private val darkThemeToggle: RadioMenuItem = new RadioMenuItem(
-      "Dark Theme") {
+      "_Dark Theme") {
       toggleGroup = themeToggle
       selected = GlobalData.darkThemeEnabled
       id = "dark"
     }
 
     private val lightThemeToggle: RadioMenuItem = new RadioMenuItem(
-      "Light Theme") {
+      "_Light Theme") {
       toggleGroup = themeToggle
       selected = !GlobalData.darkThemeEnabled
       id = "light"
@@ -103,7 +103,7 @@ private class ViewMenu(model: HomeGUIModel) {
     }
   }
 
-  val viewMenu: Menu = new Menu("View") {
+  val viewMenu: Menu = new Menu("_View") {
     mnemonicParsing = true
     items = List(themes)
   }
@@ -112,13 +112,13 @@ private class ViewMenu(model: HomeGUIModel) {
 private class HelpMenu(model: HomeGUIModel) {
 
   private val about =
-    new MenuItem("About") {
+    new MenuItem("_About") {
       accelerator = new KeyCodeCombination(KeyCode.F1) // F1
       onAction = _ => model.onAbout()
     }
 
   val helpMenu: Menu =
-    new Menu("Help") {
+    new Menu("_Help") {
       mnemonicParsing = true
       items = List(about)
     }
