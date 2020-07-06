@@ -12,7 +12,12 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.setVersion()
   }
 
-  val globalButtons: Vector[Button] = Vector(addXPub, setVersion)
+  private val addGlobalUnknown: Button = new Button("Add Unknown") {
+    onAction = _ => model.addGlobalUnknown()
+  }
+
+  val globalButtons: Vector[Button] =
+    Vector(addXPub, setVersion, addGlobalUnknown)
 
   private val finalizeInput: Button = new Button("Finalize Input") {
     onAction = _ => model.finalizeInput()
@@ -43,6 +48,10 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.addSigHashType()
   }
 
+  private val addInputUnknown: Button = new Button("Add Unknown") {
+    onAction = _ => model.addInputUnknown()
+  }
+
   val inputButtons: Seq[Button] =
     Vector(finalizeInput,
            addNonWitnessUTXO,
@@ -50,7 +59,8 @@ class PSBTButtons(model: PSBTsPaneModel) {
            addSignature,
            addInputRedeemScript,
            addInputKeyPath,
-           addSigHashType)
+           addSigHashType,
+           addInputUnknown)
 
   private val addOutputRedeemScript: Button = new Button(
     "Add Output Redeem Script") {
@@ -61,8 +71,12 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.addOutputKeyPath()
   }
 
+  private val addOutputUnknown: Button = new Button("Add Unknown") {
+    onAction = _ => model.addOutputUnknown()
+  }
+
   val outputButtons: Vector[Button] =
-    Vector(addOutputRedeemScript, addOutputKeyPath)
+    Vector(addOutputRedeemScript, addOutputKeyPath, addOutputUnknown)
 
   private val fromUnsignedTx: Button = new Button("From Unsigned Transaction") {
     onAction = _ => model.fromUnsignedTransaction()
