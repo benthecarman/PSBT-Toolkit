@@ -1,7 +1,7 @@
 package org.psbttoolkit.gui.psbts
 
 import org.psbttoolkit.gui.TaskRunner
-import scalafx.geometry.Insets
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.{Label, Separator, TextArea}
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
 
@@ -19,30 +19,35 @@ class PSBTsPane(glassPane: VBox) {
   val psbtButtons = new PSBTButtons(model)
 
   val globalCol: VBox = new VBox {
+    alignment = Pos.TopCenter
     spacing = 10
     children = Vector(new Label("Global Functions"),
                       new Separator) ++ psbtButtons.globalButtons
   }
 
   val inputCol: VBox = new VBox {
+    alignment = Pos.TopCenter
     spacing = 10
     children = Vector(new Label("Input Functions"),
                       new Separator) ++ psbtButtons.inputButtons
   }
 
   val outputCol: VBox = new VBox {
+    alignment = Pos.TopCenter
     spacing = 10
     children = Vector(new Label("Output Functions"),
                       new Separator) ++ psbtButtons.outputButtons
   }
 
   val generalCol: VBox = new VBox {
+    alignment = Pos.TopCenter
     spacing = 10
     children = Vector(new Label("General Functions"),
                       new Separator) ++ psbtButtons.generalButtons
   }
 
   val buttonPane: HBox = new HBox {
+    alignment = Pos.Center
     spacing = 10
     children = Vector(globalCol, inputCol, outputCol, generalCol)
   }
