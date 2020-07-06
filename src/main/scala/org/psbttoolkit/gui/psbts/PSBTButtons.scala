@@ -78,4 +78,15 @@ class PSBTButtons(model: PSBTsPaneModel) {
 
   val generalButtons: Vector[Button] =
     Vector(fromUnsignedTx, finalizePSBT, extractTx)
+
+  private val all: Vector[Button] =
+    globalButtons ++ inputButtons ++ outputButtons ++ generalButtons
+
+  // Set them to all have the same width as the largest button
+  // TODO: figure out how todo this dynamically
+  private val largest = fromUnsignedTx
+
+  def setMinWidth(): Unit = {
+    all.foreach(_.minWidth <== largest.width)
+  }
 }

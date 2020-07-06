@@ -62,6 +62,8 @@ class PSBTsPane(glassPane: VBox) {
   buttonPane.prefHeight <== (view.height * 2) / 3
   resultArea.prefHeight <== (view.height / 3)
 
+  psbtButtons.setMinWidth()
+
   private val taskRunner = new TaskRunner(view, glassPane)
   model.taskRunner = taskRunner
 }
