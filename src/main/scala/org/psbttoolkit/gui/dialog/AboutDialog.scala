@@ -17,7 +17,8 @@ object AboutDialog {
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
     dialog.dialogPane().content = new TextArea {
-      text = "I haven't written this yet, but remember to stack sats"
+      text =
+        "I haven't written this yet, but remember to stack sats\n\nRepo is: https://github.com/benthecarman/PSBT-Toolkit"
       editable = false
     }
 
