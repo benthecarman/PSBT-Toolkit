@@ -9,7 +9,7 @@ object GlobalData {
 
   val statusText: StringProperty = StringProperty("")
 
-  val darkThemeEnabled: Boolean = true
+  var darkThemeEnabled: Boolean = true
 
   def currentStyleSheets: Seq[String] =
     if (GlobalData.darkThemeEnabled) {

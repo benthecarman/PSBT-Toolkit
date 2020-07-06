@@ -4,7 +4,7 @@ import java.nio.file.Files
 
 import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.util.FileUtil
-import scalafx.scene.control.{Menu, MenuBar, MenuItem}
+import scalafx.scene.control._
 import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import scodec.bits.ByteVector
 
@@ -57,17 +57,54 @@ private class FileMenu(model: HomeGUIModel) {
 
   val fileMenu: Menu =
     new Menu("File") {
+      mnemonicParsing = true
       items = List(loadPSBT, exportPSBT)
     }
 }
 
 private class ViewMenu(model: HomeGUIModel) {
 
-  private val themes = new MenuItem("Themes") {
-    onAction = _ => println("themes") //todo
+  private val themeToggle: ToggleGroup = new ToggleGroup()
+
+  private val themes: Menu = new Menu("Themes") {
+    mnemonicParsing = true
+
+    private val darkThemeToggle: RadioMenuItem = new RadioMenuItem(
+      "Dark Theme") {
+      toggleGroup = themeToggle
+      selected = GlobalData.darkThemeEnabled
+      id = "dark"
+    }
+
+    private val lightThemeToggle: RadioMenuItem = new RadioMenuItem(
+      "Light Theme") {
+      toggleGroup = themeToggle
+      selected = !GlobalData.darkThemeEnabled
+      id = "light"
+    }
+
+    items = List(darkThemeToggle, lightThemeToggle)
+
+    onAction = _ => {
+      val selectedId = themeToggle.selectedToggle.value
+        .asInstanceOf[javafx.scene.control.RadioMenuItem]
+        .getId
+
+      selectedId match {
+        case "dark" =>
+          GlobalData.darkThemeEnabled = true
+          Themes.DarkTheme.applyTheme
+        case "light" =>
+          GlobalData.darkThemeEnabled = false
+          Themes.DarkTheme.undoTheme
+        case _: String =>
+          throw new RuntimeException("Error, this shouldn't be possible")
+      }
+    }
   }
 
   val viewMenu: Menu = new Menu("View") {
+    mnemonicParsing = true
     items = List(themes)
   }
 }
@@ -82,6 +119,7 @@ private class HelpMenu(model: HomeGUIModel) {
 
   val helpMenu: Menu =
     new Menu("Help") {
+      mnemonicParsing = true
       items = List(about)
     }
 }
