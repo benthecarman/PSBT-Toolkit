@@ -39,23 +39,30 @@ class PSBTsPane(glassPane: VBox) {
                       new Separator) ++ psbtButtons.outputButtons
   }
 
-  val generalCol: VBox = new VBox {
+  val generalCol: HBox = new HBox {
     alignment = Pos.TopCenter
     spacing = 10
-    children = Vector(new Label("General Functions"),
-                      new Separator) ++ psbtButtons.generalButtons
+    children = /* Vector(new Label("General Functions"),
+                      new Separator) ++*/ psbtButtons.generalButtons
   }
 
   val buttonPane: HBox = new HBox {
     alignment = Pos.Center
     spacing = 10
-    children = Vector(globalCol, inputCol, outputCol, generalCol)
+    children = Vector(globalCol, inputCol, outputCol)
+  }
+
+  val pane: BorderPane = new BorderPane {
+    padding = Insets(top = 20, right = 10, bottom = 10, left = 10)
+
+    center = buttonPane
+    bottom = generalCol
   }
 
   val view: BorderPane = new BorderPane {
     padding = Insets(top = 20, right = 10, bottom = 10, left = 10)
 
-    center = buttonPane
+    center = pane
     bottom = resultArea
   }
 
