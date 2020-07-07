@@ -82,6 +82,10 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.fromUnsignedTransaction()
   }
 
+  private val combinePSBTs: Button = new Button("Combine PSBTs") {
+    onAction = _ => model.combinePSBTs()
+  }
+
   private val finalizePSBT: Button = new Button("Finalize PSBT") {
     onAction = _ => model.finalizePSBT()
   }
@@ -91,7 +95,7 @@ class PSBTButtons(model: PSBTsPaneModel) {
   }
 
   val generalButtons: Vector[Button] =
-    Vector(fromUnsignedTx, finalizePSBT, extractTx)
+    Vector(fromUnsignedTx, combinePSBTs, finalizePSBT, extractTx)
 
   private val all: Vector[Button] =
     globalButtons ++ inputButtons ++ outputButtons ++ generalButtons

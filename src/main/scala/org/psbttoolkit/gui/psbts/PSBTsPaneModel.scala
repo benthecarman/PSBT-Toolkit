@@ -422,4 +422,26 @@ class PSBTsPaneModel(resultArea: TextArea) {
       }
     )
   }
+
+  def combinePSBTs(): Unit = {
+    val resultOpt: Option[PSBT] = getPSBTOpt.flatMap { _ =>
+      CombinePSBTs.showAndWait(parentWindow.value)
+    }
+
+    taskRunner.run(
+      caption = "Combine PSBTs",
+      op = getPSBTOpt match {
+        case Some(psbt) =>
+          resultOpt match {
+            case Some(other) =>
+              val updated = psbt.combinePSBT(other)
+              setResult(updated.base64)
+            case None =>
+              ()
+          }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
 }
