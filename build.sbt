@@ -6,6 +6,8 @@ scalaVersion := "2.13.3"
 
 libraryDependencies ++= Deps.gui
 
+resolvers += Resolver.sonatypeRepo("snapshots")
+
 enablePlugins(JavaAppPackaging, GraalVMNativeImagePlugin)
 
 assemblyMergeStrategy in assembly := {
