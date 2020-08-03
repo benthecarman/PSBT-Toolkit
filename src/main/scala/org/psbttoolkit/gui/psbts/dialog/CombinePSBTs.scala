@@ -1,28 +1,28 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.psbts.dialog
 
-import org.bitcoins.core.protocol.transaction.TransactionOutput
+import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.geometry.Insets
-import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
+import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
 
-object AddWitnessUTXODialog {
+object CombinePSBTs {
 
-  def showAndWait(parentWindow: Window): Option[(Int, TransactionOutput)] = {
-    val dialog = new Dialog[Option[(Int, TransactionOutput)]]() {
+  def showAndWait(parentWindow: Window): Option[PSBT] = {
+    val dialog = new Dialog[Option[PSBT]]() {
       initOwner(parentWindow)
-      title = "Add Witness UTXO"
+      title = "Combine PSBTs"
     }
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK, ButtonType.Cancel)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
-    val indexTF = new TextField()
-    val outputTF = new TextField() {
-      promptText = "Serialized in hex"
+    val psbtTA = new TextArea() {
+      wrapText = true
+      promptText = "Serialized in hex or base64"
     }
 
     dialog.dialogPane().content = new GridPane {
@@ -32,33 +32,31 @@ object AddWitnessUTXODialog {
 
       var nextRow: Int = 0
 
-      def addRow(label: String, textField: TextField): Unit = {
+      def addRow(label: String, textArea: TextArea): Unit = {
         add(new Label(label), 0, nextRow)
-        add(textField, 1, nextRow)
+        add(textArea, 1, nextRow)
         nextRow += 1
       }
 
-      addRow("Input Index", indexTF)
-      addRow("Output", outputTF)
+      addRow("PSBT", psbtTA)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== indexTF.text.isEmpty || outputTF.text.isEmpty
+    okButton.disable <== psbtTA.text.isEmpty
 
-    Platform.runLater(indexTF.requestFocus())
+    Platform.runLater(psbtTA.requestFocus())
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
-        Some((indexTF.text.value.toInt, TransactionOutput(outputTF.text.value)))
+        Some(PSBT.fromString(psbtTA.text.value))
       } else None
 
     dialog.showAndWait() match {
-      case Some(Some((index: Int, output: TransactionOutput))) =>
-        Some((index, output))
-      case Some(_) | None => None
+      case Some(Some(psbt: PSBT)) => Some(psbt)
+      case Some(_) | None         => None
     }
   }
 }

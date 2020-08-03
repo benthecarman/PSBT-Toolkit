@@ -1,6 +1,6 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.psbts.dialog
 
-import org.bitcoins.core.crypto.ExtPublicKey
+import org.bitcoins.core.crypto.ExtKey
 import org.bitcoins.core.hd.BIP32Path
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
@@ -9,25 +9,32 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
-import scodec.bits.ByteVector
 
 import scala.util.{Failure, Success, Try}
 
-object AddGlobalXPubKey {
+object AddKeyPathDialog {
 
   def showAndWait(
-      parentWindow: Window): Option[(ExtPublicKey, ByteVector, BIP32Path)] = {
-    val dialog = new Dialog[Option[(ExtPublicKey, ByteVector, BIP32Path)]]() {
+      isInput: Boolean,
+      parentWindow: Window): Option[(Int, ExtKey, BIP32Path)] = {
+
+    val typeStr = if (isInput) "Input" else "Output"
+
+    val dialog = new Dialog[Option[(Int, ExtKey, BIP32Path)]]() {
       initOwner(parentWindow)
-      title = "Add XPub Key"
+      title = s"Add $typeStr Key Path"
     }
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK, ButtonType.Cancel)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
-    val extPubKeyTF = new TextField()
-    val fingerprintTF = new TextField()
-    val pathTF = new TextField()
+    val indexTF = new TextField()
+    val extKeyTF = new TextField() {
+      promptText = "hex or base64"
+    }
+    val keyPathTF = new TextField() {
+      promptText = "hex or base64"
+    }
 
     dialog.dialogPane().content = new GridPane {
       hgap = 10
@@ -42,42 +49,39 @@ object AddGlobalXPubKey {
         nextRow += 1
       }
 
-      addRow("XPub Key", extPubKeyTF)
-      addRow("Master Fingerprint", fingerprintTF)
-      addRow("BIP 32 Path", pathTF)
+      addRow(s"$typeStr Index", indexTF)
+      addRow("Ext Key", extKeyTF)
+      addRow("Key Path", keyPathTF)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== extPubKeyTF.text.isEmpty || fingerprintTF.text.isEmpty || pathTF.text.isEmpty
+    okButton.disable <== indexTF.text.isEmpty || extKeyTF.text.isEmpty || keyPathTF.text.isEmpty
 
-    Platform.runLater(extPubKeyTF.requestFocus())
+    Platform.runLater(indexTF.requestFocus())
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
-        Some(getExtKey(extPubKeyTF.text.value).get,
-             ByteVector.fromValidHex(fingerprintTF.text.value),
-             getBIP32Path(pathTF.text.value).get)
+        Some(
+          (indexTF.text.value.toInt,
+           getExtKey(extKeyTF.text.value).get,
+           getBIP32Path(keyPathTF.text.value).get))
       } else None
 
     dialog.showAndWait() match {
-      case Some(
-            Some(
-              (extPubKey: ExtPublicKey,
-               fingerprint: ByteVector,
-               path: BIP32Path))) =>
-        Some(extPubKey, fingerprint, path)
+      case Some(Some((index: Int, ext: ExtKey, path: BIP32Path))) =>
+        Some((index, ext, path))
       case Some(_) | None => None
     }
   }
 
-  private def getExtKey(str: String): Try[ExtPublicKey] = {
-    ExtPublicKey.fromString(str) match {
+  private def getExtKey(str: String): Try[ExtKey] = {
+    ExtKey.fromString(str) match {
       case Success(key) => Success(key)
       case Failure(_) =>
-        Try(ExtPublicKey.fromHex(str))
+        Try(ExtKey.fromHex(str))
     }
   }
 

@@ -1,4 +1,4 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.psbts.dialog
 
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._

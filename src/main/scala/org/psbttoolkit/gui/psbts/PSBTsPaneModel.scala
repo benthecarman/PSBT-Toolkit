@@ -3,7 +3,22 @@ package org.psbttoolkit.gui.psbts
 import org.bitcoins.core.psbt.GlobalPSBTRecord.{Version, XPubKey}
 import org.bitcoins.core.psbt._
 import org.psbttoolkit.gui.TaskRunner
-import org.psbttoolkit.gui.dialog._
+import org.psbttoolkit.gui.psbts.dialog.{
+  AddGlobalUnknownDialog,
+  AddGlobalXPubKey,
+  AddKeyPathDialog,
+  AddNonWitnessUTXODialog,
+  AddRedeemScriptDialog,
+  AddSigHashTypeDialog,
+  AddSignatureDialog,
+  AddUnknownDialog,
+  AddWitnessUTXODialog,
+  CombinePSBTs,
+  ExtractTransactionDialog,
+  FinalizeInputDialog,
+  PSBTFromUnsignedTransaction,
+  SetVersionDialog
+}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window

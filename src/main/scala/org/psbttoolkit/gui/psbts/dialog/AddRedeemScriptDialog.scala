@@ -1,4 +1,4 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.psbts.dialog
 
 import org.bitcoins.core.protocol.script.ScriptPubKey
 import org.psbttoolkit.gui.GlobalData

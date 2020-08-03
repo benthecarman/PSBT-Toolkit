@@ -1,4 +1,4 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.psbts.dialog
 
 import org.bitcoins.core.number.UInt32
 import org.psbttoolkit.gui.GlobalData

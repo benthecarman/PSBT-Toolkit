@@ -1,7 +1,7 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.transactions.dialog
 
 import org.psbttoolkit.gui.GlobalData
-import scalafx.Includes._
+import scalafx.Includes.jfxDialogPane2sfx
 import scalafx.scene.control.{ButtonType, Dialog, TextArea}
 import scalafx.stage.Window
 

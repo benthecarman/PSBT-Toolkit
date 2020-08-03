@@ -9,7 +9,7 @@ import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.core.util.FutureUtil
 import org.bitcoins.server.SerializedTransaction
-import org.psbttoolkit.gui.dialog.DecodeTransactionDialog
+import org.psbttoolkit.gui.transactions.dialog.DecodeTransactionDialog
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea

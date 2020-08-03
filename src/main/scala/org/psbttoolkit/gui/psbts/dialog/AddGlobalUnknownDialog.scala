@@ -1,29 +1,30 @@
-package org.psbttoolkit.gui.dialog
+package org.psbttoolkit.gui.psbts.dialog
 
-import org.bitcoins.core.protocol.transaction.Transaction
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.geometry.Insets
-import scalafx.scene.control._
+import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
+import scodec.bits.ByteVector
 
-import scala.util.Try
+object AddGlobalUnknownDialog {
 
-object PSBTFromUnsignedTransaction {
+  def showAndWait(parentWindow: Window): Option[(ByteVector, ByteVector)] = {
 
-  def showAndWait(parentWindow: Window): Option[Try[Transaction]] = {
-    val dialog = new Dialog[Option[Try[Transaction]]]() {
+    val dialog = new Dialog[Option[(ByteVector, ByteVector)]]() {
       initOwner(parentWindow)
-      title = "PSBT from Unsigned Transaction"
+      title = s"Add Global Unknown Record"
     }
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK, ButtonType.Cancel)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
-    val unsignedTxTA = new TextArea() {
-      wrapText = true
+    val keyTF = new TextField() {
+      promptText = "Serialized in hex"
+    }
+    val dataTF = new TextField() {
       promptText = "Serialized in hex"
     }
 
@@ -34,31 +35,35 @@ object PSBTFromUnsignedTransaction {
 
       var nextRow: Int = 0
 
-      def addRow(label: String, textArea: TextArea): Unit = {
+      def addRow(label: String, textField: TextField): Unit = {
         add(new Label(label), 0, nextRow)
-        add(textArea, 1, nextRow)
+        add(textField, 1, nextRow)
         nextRow += 1
       }
 
-      addRow("Transaction", unsignedTxTA)
+      addRow("Key", keyTF)
+      addRow("Data", dataTF)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== unsignedTxTA.text.isEmpty
+    okButton.disable <== keyTF.text.isEmpty || dataTF.text.isEmpty
 
-    Platform.runLater(unsignedTxTA.requestFocus())
+    Platform.runLater(keyTF.requestFocus())
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
-        Some(Try(Transaction(unsignedTxTA.text.value)))
+        Some(
+          (ByteVector.fromValidHex(keyTF.text.value),
+           ByteVector.fromValidHex(dataTF.text.value)))
       } else None
 
     dialog.showAndWait() match {
-      case Some(Some(txT: Try[Transaction])) => Some(txT)
-      case Some(_) | None                    => None
+      case Some(Some((key: ByteVector, data: ByteVector))) =>
+        Some((key, data))
+      case Some(_) | None => None
     }
   }
 }

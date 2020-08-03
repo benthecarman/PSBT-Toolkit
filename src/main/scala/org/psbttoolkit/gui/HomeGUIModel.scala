@@ -1,9 +1,9 @@
 package org.psbttoolkit.gui
 
 import org.bitcoins.core.psbt.PSBT
-import org.psbttoolkit.gui.dialog.AboutDialog
 import org.psbttoolkit.gui.generators.GeneratorsPane
 import org.psbttoolkit.gui.psbts.PSBTsPane
+import org.psbttoolkit.gui.psbts.dialog.AboutDialog
 import org.psbttoolkit.gui.transactions.TransactionsPane
 import scalafx.beans.property.ObjectProperty
 import scalafx.stage.Window
