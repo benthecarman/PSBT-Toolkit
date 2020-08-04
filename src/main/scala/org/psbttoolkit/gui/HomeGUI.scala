@@ -1,5 +1,6 @@
 package org.psbttoolkit.gui
 
+import org.psbttoolkit.gui.crypto.CryptoPane
 import org.psbttoolkit.gui.generators.GeneratorsPane
 import org.psbttoolkit.gui.psbts.PSBTsPane
 import org.psbttoolkit.gui.transactions.TransactionsPane
@@ -55,6 +56,13 @@ object HomeGUI extends JFXApp {
     content = txPane.view
   }
 
+  val cryptoPane = new CryptoPane(glassPane)
+
+  val cryptoTab: Tab = new Tab {
+    text = "Crypto"
+    content = cryptoPane.view
+  }
+
   val genPane = new GeneratorsPane(glassPane)
 
   val genTab: Tab = new Tab {
@@ -64,7 +72,7 @@ object HomeGUI extends JFXApp {
 
   private val tabPane: TabPane = new TabPane() {
 
-    tabs = Seq(psbtTab, txTab, genTab)
+    tabs = Seq(psbtTab, txTab, cryptoTab, genTab)
 
     tabClosingPolicy = TabClosingPolicy.Unavailable
   }
