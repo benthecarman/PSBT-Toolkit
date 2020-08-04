@@ -20,6 +20,7 @@ class CryptoPane(glassPane: VBox) {
 
   private val buttonPane = new TilePane {
     hgap = 10
+    vgap = 10
     children = buttons.all
   }
 

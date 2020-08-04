@@ -2,8 +2,7 @@ package org.psbttoolkit.gui.crypto
 
 import org.bitcoins.crypto.{ECPrivateKey, ECPublicKey, NetworkElement}
 import org.psbttoolkit.gui.TaskRunner
-import org.psbttoolkit.gui.crypto.dialog.HashDataDialog
-import org.psbttoolkit.gui.transactions.dialog.ConstructTransactionDialog
+import org.psbttoolkit.gui.crypto.dialog._
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
@@ -33,6 +32,35 @@ class CryptoPaneModel(resultArea: TextArea) {
     taskRunner.run("Generate Public Key", setResult(ECPublicKey.freshPublicKey))
   }
 
+  def privKeyToPubKey(): Unit = {
+    val resultOpt = ConvertToPublicKeyDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Convert to Pubkey",
+      op = resultOpt match {
+        case Some(key) =>
+          setResult(key)
+        case None =>
+          ()
+      }
+    )
+  }
+
+  def privKeyToSchnorrPubKey(): Unit = {
+    val resultOpt =
+      ConvertToSchnorrPublicKeyDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Convert to Schnorr Pubkey",
+      op = resultOpt match {
+        case Some(key) =>
+          setResult(key)
+        case None =>
+          ()
+      }
+    )
+  }
+
   def hashData(): Unit = {
     val resultOpt = HashDataDialog.showAndWait(parentWindow.value)
 
@@ -41,6 +69,34 @@ class CryptoPaneModel(resultArea: TextArea) {
       op = resultOpt match {
         case Some(hash) =>
           setResult(hash)
+        case None =>
+          ()
+      }
+    )
+  }
+
+  def signData(): Unit = {
+    val resultOpt = SignDataDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Sign Data",
+      op = resultOpt match {
+        case Some(sig) =>
+          setResult(sig.hex)
+        case None =>
+          ()
+      }
+    )
+  }
+
+  def schnorrSignData(): Unit = {
+    val resultOpt = SchnorrSignDataDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Schnorr Sign Data",
+      op = resultOpt match {
+        case Some(sig) =>
+          setResult(sig.hex)
         case None =>
           ()
       }

@@ -4,19 +4,42 @@ import scalafx.scene.control.Button
 
 class CryptoButtons(model: CryptoPaneModel) {
 
-  val genPrivateKey: Button = new Button("Generate Private Key") {
+  private val genPrivateKey: Button = new Button("Generate Private Key") {
     onAction = _ => model.genPrivateKey()
   }
 
-  val genPublicKey: Button = new Button("Generate Public Key") {
+  private val genPublicKey: Button = new Button("Generate Public Key") {
     onAction = _ => model.genPublicKey()
   }
 
-  val hashData: Button = new Button("Hash Data") {
+  private val privKeyToPubKey: Button = new Button("Private Key to Pubkey") {
+    onAction = _ => model.privKeyToPubKey()
+  }
+
+  private val privKeyToSchnorrPubKey: Button = new Button(
+    "Private Key to Schnorr Pubkey") {
+    onAction = _ => model.privKeyToSchnorrPubKey()
+  }
+
+  private val hashData: Button = new Button("Hash Data") {
     onAction = _ => model.hashData()
   }
 
-  val all: Vector[Button] = Vector(genPrivateKey, genPublicKey, hashData)
+  private val signData: Button = new Button("Sign Data") {
+    onAction = _ => model.signData()
+  }
+
+  private val schnorrSignData: Button = new Button("Schnorr Sign Data") {
+    onAction = _ => model.schnorrSignData()
+  }
+
+  val all: Vector[Button] = Vector(genPrivateKey,
+                                   genPublicKey,
+                                   privKeyToPubKey,
+                                   privKeyToSchnorrPubKey,
+                                   hashData,
+                                   signData,
+                                   schnorrSignData)
 
   // Set them to all have the same width as the largest button
   private val largest = all.maxBy(_.getWidth)

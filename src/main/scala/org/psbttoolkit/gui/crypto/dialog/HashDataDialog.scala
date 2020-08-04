@@ -5,7 +5,6 @@ import org.bitcoins.crypto.NetworkElement
 import org.psbttoolkit.gui.GlobalData
 import org.psbttoolkit.gui.crypto.HashAlgo
 import scalafx.Includes._
-import scalafx.application.Platform
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, ComboBox, Dialog, TextField}
 import scalafx.scene.layout.HBox
@@ -48,8 +47,6 @@ object HashDataDialog {
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
     okButton.disable <== dataTF.text.isEmpty
-
-    Platform.runLater(dataTF.requestFocus())
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
