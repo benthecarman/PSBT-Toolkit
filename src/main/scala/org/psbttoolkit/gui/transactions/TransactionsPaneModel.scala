@@ -97,7 +97,7 @@ class TransactionsPaneModel(resultArea: TextArea) {
     val resultOpt = ConstructTransactionDialog.showAndWait(parentWindow.value)
 
     taskRunner.run(
-      caption = "Constrcut Transaction",
+      caption = "Construct Transaction",
       op = resultOpt match {
         case Some(tx) =>
           setResult(tx)
