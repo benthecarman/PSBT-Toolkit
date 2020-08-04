@@ -1,6 +1,5 @@
 package org.psbttoolkit.gui.transactions
 
-import org.psbttoolkit.gui.GlobalData.system
 import scalafx.scene.control.Button
 
 class TransactionsButtons(model: TransactionsPaneModel) {

@@ -1,29 +1,23 @@
 package org.psbttoolkit.gui.psbts
 
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.client.RequestBuilding.Get
+import akka.stream.Materializer
+import akka.util.ByteString
+import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
+import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.core.psbt.GlobalPSBTRecord.{Version, XPubKey}
 import org.bitcoins.core.psbt._
-import org.psbttoolkit.gui.TaskRunner
-import org.psbttoolkit.gui.psbts.dialog.{
-  AddGlobalUnknownDialog,
-  AddGlobalXPubKey,
-  AddKeyPathDialog,
-  AddNonWitnessUTXODialog,
-  AddRedeemScriptDialog,
-  AddSigHashTypeDialog,
-  AddSignatureDialog,
-  AddUnknownDialog,
-  AddWitnessUTXODialog,
-  CombinePSBTs,
-  ExtractTransactionDialog,
-  FinalizeInputDialog,
-  PSBTFromUnsignedTransaction,
-  SetVersionDialog
-}
+import org.bitcoins.crypto.DoubleSha256DigestBE
+import org.psbttoolkit.gui.GlobalData.system
+import org.psbttoolkit.gui.psbts.dialog._
+import org.psbttoolkit.gui.{GlobalData, TaskRunner}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
 import scodec.bits.ByteVector
 
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
 
 class PSBTsPaneModel(resultArea: TextArea) {
@@ -36,6 +30,10 @@ class PSBTsPaneModel(resultArea: TextArea) {
 
   def setResult(str: String): Unit = {
     resultArea.text = str
+  }
+
+  def setResult(psbt: PSBT): Unit = {
+    setResult(psbt.base64)
   }
 
   def getPSBTOpt: Option[PSBT] = {
@@ -453,6 +451,53 @@ class PSBTsPaneModel(resultArea: TextArea) {
               setResult(updated.base64)
             case None =>
               ()
+          }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
+  def addBlockExplorerData(): Unit = {
+    implicit val m: Materializer = Materializer(system)
+    implicit val ec: ExecutionContextExecutor = m.executionContext
+
+    def makeCall(txIdBE: DoubleSha256DigestBE): Future[String] = {
+      val url = GlobalData.network match {
+        case MainNet =>
+          s"https://blockstream.info/api/tx/${txIdBE.hex}/hex"
+        case TestNet3 =>
+          s"https://blockstream.info/testnet/api/tx/${txIdBE.hex}/hex"
+        case RegTest =>
+          throw new IllegalArgumentException(
+            "Unable broadcast a regtest transaction")
+      }
+
+      Http()
+        .singleRequest(Get(url))
+        .flatMap(response =>
+          response.entity.dataBytes
+            .runFold(ByteString.empty)(_ ++ _)
+            .map(payload => payload.decodeString(ByteString.UTF_8)))
+    }
+
+    taskRunner.run[Future[Unit]](
+      caption = "Fetch Data",
+      op = getPSBTOpt match {
+        case Some(emptyPsbt) =>
+          val prevTxIdBEs =
+            emptyPsbt.transaction.inputs.map(_.previousOutput.txIdBE)
+
+          val prevTxFs = prevTxIdBEs.map(makeCall)
+          Future.sequence(prevTxFs).map { prevTxStrs =>
+            val prevTxs = prevTxStrs.map(Transaction.fromHex).toVector
+
+            val psbt = prevTxs.zipWithIndex.foldLeft(emptyPsbt) {
+              case (accumPSBT, (tx, index)) =>
+                accumPSBT.addUTXOToInput(tx, index)
+            }
+
+            setResult(psbt)
           }
         case None =>
           throw new RuntimeException("Missing PSBT")

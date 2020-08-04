@@ -94,8 +94,12 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.extractTransaction()
   }
 
+  private val fetchData: Button = new Button("Fetch Data") {
+    onAction = _ => model.addBlockExplorerData()
+  }
+
   val generalButtons: Vector[Button] =
-    Vector(fromUnsignedTx, combinePSBTs, finalizePSBT, extractTx)
+    Vector(fromUnsignedTx, combinePSBTs, finalizePSBT, extractTx, fetchData)
 
   private val all: Vector[Button] =
     globalButtons ++ inputButtons ++ outputButtons ++ generalButtons

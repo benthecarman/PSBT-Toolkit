@@ -1,13 +1,13 @@
 package org.psbttoolkit.gui.transactions
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.client.RequestBuilding.Post
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import akka.util.ByteString
 import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.server.SerializedTransaction
+import org.psbttoolkit.gui.GlobalData.system
 import org.psbttoolkit.gui.transactions.dialog.{
   ConstructTransactionDialog,
   DecodeTransactionDialog
@@ -40,8 +40,8 @@ class TransactionsPaneModel(resultArea: TextArea) {
     Try(Transaction.fromHex(resultArea.text.value)).toOption
   }
 
-  def broadcastTx()(implicit system: ActorSystem): Unit = {
-    implicit val m: ActorMaterializer = ActorMaterializer.create(system)
+  def broadcastTx(): Unit = {
+    implicit val m: Materializer = Materializer(system)
     implicit val ec: ExecutionContextExecutor = m.executionContext
 
     taskRunner.run(
