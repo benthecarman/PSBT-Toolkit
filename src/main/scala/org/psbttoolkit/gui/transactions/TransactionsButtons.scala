@@ -13,5 +13,10 @@ class TransactionsButtons(model: TransactionsPaneModel) {
     onAction = _ => model.decodeTransaction()
   }
 
-  val all: Vector[Button] = Vector(broadcastTx, decodeTx)
+  private val constructTransaction: Button = new Button(
+    "Construct Transaction") {
+    onAction = _ => model.constructTransaction()
+  }
+
+  val all: Vector[Button] = Vector(broadcastTx, decodeTx, constructTransaction)
 }

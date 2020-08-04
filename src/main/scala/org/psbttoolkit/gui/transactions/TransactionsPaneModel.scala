@@ -7,15 +7,17 @@ import akka.stream.ActorMaterializer
 import akka.util.ByteString
 import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
-import org.bitcoins.core.util.FutureUtil
 import org.bitcoins.server.SerializedTransaction
-import org.psbttoolkit.gui.transactions.dialog.DecodeTransactionDialog
+import org.psbttoolkit.gui.transactions.dialog.{
+  ConstructTransactionDialog,
+  DecodeTransactionDialog
+}
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.ExecutionContextExecutor
 import scala.util.Try
 
 class TransactionsPaneModel(resultArea: TextArea) {
@@ -28,6 +30,10 @@ class TransactionsPaneModel(resultArea: TextArea) {
 
   def setResult(str: String): Unit = {
     resultArea.text = str
+  }
+
+  def setResult(tx: Transaction): Unit = {
+    setResult(tx.hex)
   }
 
   def getTransactionOpt: Option[Transaction] = {
@@ -83,6 +89,20 @@ class TransactionsPaneModel(resultArea: TextArea) {
           resultOpt.map(_ => ())
         case None =>
           throw new RuntimeException("Missing Transaction")
+      }
+    )
+  }
+
+  def constructTransaction(): Unit = {
+    val resultOpt = ConstructTransactionDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Constrcut Transaction",
+      op = resultOpt match {
+        case Some(tx) =>
+          setResult(tx)
+        case None =>
+          ()
       }
     )
   }
