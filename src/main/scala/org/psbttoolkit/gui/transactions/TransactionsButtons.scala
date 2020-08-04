@@ -18,4 +18,10 @@ class TransactionsButtons(model: TransactionsPaneModel) {
   }
 
   val all: Vector[Button] = Vector(broadcastTx, decodeTx, constructTransaction)
+
+  private val largest = all.maxBy(_.getWidth)
+
+  def setMinWidth(): Unit = {
+    all.foreach(_.minWidth <== largest.width)
+  }
 }

@@ -19,6 +19,7 @@ class TransactionsPane(glassPane: VBox) {
   val txButtons = new TransactionsButtons(model)
 
   private val buttonPane = new TilePane {
+    hgap = 10
     children = txButtons.all
   }
 
@@ -31,6 +32,8 @@ class TransactionsPane(glassPane: VBox) {
 
   buttonPane.prefHeight <== (view.height * 2) / 3
   resultArea.prefHeight <== (view.height / 3)
+
+  txButtons.setMinWidth()
 
   private val taskRunner = new TaskRunner(buttonPane, glassPane)
   model.taskRunner = taskRunner
