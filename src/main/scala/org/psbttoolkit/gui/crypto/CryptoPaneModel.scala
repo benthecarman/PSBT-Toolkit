@@ -82,7 +82,7 @@ class CryptoPaneModel(resultArea: TextArea) {
       caption = "Sign Data",
       op = resultOpt match {
         case Some(sig) =>
-          setResult(sig.hex)
+          setResult(sig)
         case None =>
           ()
       }
@@ -96,7 +96,7 @@ class CryptoPaneModel(resultArea: TextArea) {
       caption = "Schnorr Sign Data",
       op = resultOpt match {
         case Some(sig) =>
-          setResult(sig.hex)
+          setResult(sig)
         case None =>
           ()
       }
