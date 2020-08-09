@@ -102,4 +102,18 @@ class CryptoPaneModel(resultArea: TextArea) {
       }
     )
   }
+
+  def flipEndianness(): Unit = {
+    val resultOpt = FlipEndiannessDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Flip Endianness",
+      op = resultOpt match {
+        case Some(bytes) =>
+          setResult(bytes.toHex)
+        case None =>
+          ()
+      }
+    )
+  }
 }

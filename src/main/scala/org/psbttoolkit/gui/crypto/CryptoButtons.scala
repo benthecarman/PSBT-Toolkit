@@ -21,6 +21,10 @@ class CryptoButtons(model: CryptoPaneModel) {
     onAction = _ => model.privKeyToSchnorrPubKey()
   }
 
+  private val flipEndianness: Button = new Button("Flip Endianness") {
+    onAction = _ => model.flipEndianness()
+  }
+
   private val hashData: Button = new Button("Hash Data") {
     onAction = _ => model.hashData()
   }
@@ -37,6 +41,7 @@ class CryptoButtons(model: CryptoPaneModel) {
                                    genPublicKey,
                                    privKeyToPubKey,
                                    privKeyToSchnorrPubKey,
+                                   flipEndianness,
                                    hashData,
                                    signData,
                                    schnorrSignData)
