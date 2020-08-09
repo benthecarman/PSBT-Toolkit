@@ -46,21 +46,6 @@ class CryptoPaneModel(resultArea: TextArea) {
     )
   }
 
-  def privKeyToSchnorrPubKey(): Unit = {
-    val resultOpt =
-      ConvertToSchnorrPublicKeyDialog.showAndWait(parentWindow.value)
-
-    taskRunner.run(
-      caption = "Convert to Schnorr Pubkey",
-      op = resultOpt match {
-        case Some(key) =>
-          setResult(key)
-        case None =>
-          ()
-      }
-    )
-  }
-
   def hashData(): Unit = {
     val resultOpt = HashDataDialog.showAndWait(parentWindow.value)
 
@@ -80,20 +65,6 @@ class CryptoPaneModel(resultArea: TextArea) {
 
     taskRunner.run(
       caption = "Sign Data",
-      op = resultOpt match {
-        case Some(sig) =>
-          setResult(sig)
-        case None =>
-          ()
-      }
-    )
-  }
-
-  def schnorrSignData(): Unit = {
-    val resultOpt = SchnorrSignDataDialog.showAndWait(parentWindow.value)
-
-    taskRunner.run(
-      caption = "Schnorr Sign Data",
       op = resultOpt match {
         case Some(sig) =>
           setResult(sig)

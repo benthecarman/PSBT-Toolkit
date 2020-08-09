@@ -1,10 +1,13 @@
 package org.psbttoolkit.gui.crypto.dialog
 
-import org.bitcoins.crypto.{ECDigitalSignature, ECPrivateKey}
+import org.bitcoins.crypto.{ECPrivateKey, ECPublicKey, NetworkElement}
 import org.psbttoolkit.gui.GlobalData
+import org.psbttoolkit.gui.crypto.SignatureSchema
+import org.psbttoolkit.gui.crypto.SignatureSchema._
 import scalafx.Includes._
+import scalafx.event.ActionEvent
 import scalafx.geometry.Insets
-import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
+import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
 import scodec.bits.ByteVector
@@ -13,8 +16,8 @@ import scala.concurrent.ExecutionContext.global
 
 object SignDataDialog {
 
-  def showAndWait(parentWindow: Window): Option[ECDigitalSignature] = {
-    val dialog = new Dialog[Option[ECDigitalSignature]]() {
+  def showAndWait(parentWindow: Window): Option[NetworkElement] = {
+    val dialog = new Dialog[Option[NetworkElement]]() {
       initOwner(parentWindow)
       title = "Sign Data"
     }
@@ -30,22 +33,52 @@ object SignDataDialog {
       promptText = "32 bytes (hex encoded)"
     }
 
-    dialog.dialogPane().content = new GridPane() {
+    val adaptorPointLabel = new Label("Adaptor Point")
+
+    val adaptorPointTF = new TextField() {
+      promptText = "32 bytes (hex encoded)"
+    }
+
+    def setAdaptorPointVisibility(visibility: Boolean): Unit = {
+      adaptorPointLabel.setVisible(visibility)
+      adaptorPointTF.setVisible(visibility)
+    }
+
+    var signSchema: SignatureSchema = ECDSA
+
+    val signSelector: ComboBox[String] = new ComboBox(SignatureSchema.names) {
+      value = SignatureSchema.ECDSA.toString
+
+      onAction = (_: ActionEvent) => {
+        signSchema = SignatureSchema.fromString(value.value)
+        signSchema match {
+          case ECDSA | Schnorr =>
+            setAdaptorPointVisibility(false)
+          case AdaptorSign =>
+            setAdaptorPointVisibility(true)
+        }
+      }
+    }
+
+    val grid = new GridPane() {
       hgap = 10
       vgap = 10
       padding = Insets(20, 100, 10, 10)
 
-      var nextRow: Int = 0
+      add(new Label("Private Key"), 0, 0)
+      add(privKeyTF, 1, 0)
+      add(signSelector, 2, 0)
 
-      def addRow(label: String, textField: TextField): Unit = {
-        add(new Label(label), 0, nextRow)
-        add(textField, 1, nextRow)
-        nextRow += 1
-      }
+      add(new Label("Data"), 0, 1)
+      add(dataTF, 1, 1)
 
-      addRow("Private Key", privKeyTF)
-      addRow("Data", dataTF)
+      add(adaptorPointLabel, 0, 2)
+      add(adaptorPointTF, 1, 2)
     }
+
+    setAdaptorPointVisibility(false)
+
+    dialog.dialogPane().content = grid
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
@@ -68,11 +101,26 @@ object SignDataDialog {
         val keyStr = privKeyTF.text.value
         val key = ECPrivateKey(keyStr)
 
-        Some(key.signLowR(bytes)(global))
+        signSchema match {
+          case ECDSA =>
+            Some(key.signLowR(bytes)(global))
+          case Schnorr =>
+            Some(key.schnorrSign(bytes))
+          case AdaptorSign =>
+            val adaptorPointStr = adaptorPointTF.text.value
+            val bytes = ByteVector.fromHex(adaptorPointStr) match {
+              case Some(valid) => valid
+              case None =>
+                throw new IllegalArgumentException(
+                  "Adaptor Point given was not correctly hex encoded")
+            }
+            val pubKey = ECPublicKey(bytes)
+            Some(key.adaptorSign(pubKey, bytes))
+        }
       } else None
 
     dialog.showAndWait() match {
-      case Some(Some(sig: ECDigitalSignature)) =>
+      case Some(Some(sig: NetworkElement)) =>
         Some(sig)
       case Some(_) | None =>
         None

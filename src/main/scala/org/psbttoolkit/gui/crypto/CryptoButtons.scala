@@ -16,11 +16,6 @@ class CryptoButtons(model: CryptoPaneModel) {
     onAction = _ => model.privKeyToPubKey()
   }
 
-  private val privKeyToSchnorrPubKey: Button = new Button(
-    "Private Key to Schnorr Pubkey") {
-    onAction = _ => model.privKeyToSchnorrPubKey()
-  }
-
   private val flipEndianness: Button = new Button("Flip Endianness") {
     onAction = _ => model.flipEndianness()
   }
@@ -33,18 +28,12 @@ class CryptoButtons(model: CryptoPaneModel) {
     onAction = _ => model.signData()
   }
 
-  private val schnorrSignData: Button = new Button("Schnorr Sign Data") {
-    onAction = _ => model.schnorrSignData()
-  }
-
   val all: Vector[Button] = Vector(genPrivateKey,
                                    genPublicKey,
                                    privKeyToPubKey,
-                                   privKeyToSchnorrPubKey,
                                    flipEndianness,
                                    hashData,
-                                   signData,
-                                   schnorrSignData)
+                                   signData)
 
   // Set them to all have the same width as the largest button
   private val largest = all.maxBy(_.getWidth)
