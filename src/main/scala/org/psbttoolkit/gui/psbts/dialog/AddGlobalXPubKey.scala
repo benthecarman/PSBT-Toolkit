@@ -52,8 +52,6 @@ object AddGlobalXPubKey {
     // Simple validation that sufficient data was entered
     okButton.disable <== extPubKeyTF.text.isEmpty || fingerprintTF.text.isEmpty || pathTF.text.isEmpty
 
-    Platform.runLater(extPubKeyTF.requestFocus())
-
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {

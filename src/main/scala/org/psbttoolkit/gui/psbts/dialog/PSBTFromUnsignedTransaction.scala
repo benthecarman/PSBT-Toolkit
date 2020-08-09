@@ -48,8 +48,6 @@ object PSBTFromUnsignedTransaction {
     // Simple validation that sufficient data was entered
     okButton.disable <== unsignedTxTA.text.isEmpty
 
-    Platform.runLater(unsignedTxTA.requestFocus())
-
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {

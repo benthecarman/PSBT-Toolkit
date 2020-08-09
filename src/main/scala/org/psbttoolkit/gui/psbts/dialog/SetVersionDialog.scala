@@ -42,8 +42,6 @@ object SetVersionDialog {
     // Simple validation that sufficient data was entered
     okButton.disable <== versionTF.text.isEmpty
 
-    Platform.runLater(versionTF.requestFocus())
-
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
