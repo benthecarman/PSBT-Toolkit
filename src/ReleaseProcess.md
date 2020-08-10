@@ -15,3 +15,7 @@ cat stub.sh target/scala-2.13/psbt-toolkit-assembly-0.1.1.jar > psbt-toolkit && 
 ```
 Use Launch4j on a windows machine to create psbt-toolkit.exe
 ```
+
+## Step 4
+
+Create SHASUMS file
