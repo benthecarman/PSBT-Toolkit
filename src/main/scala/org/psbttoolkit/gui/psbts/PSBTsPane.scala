@@ -40,10 +40,9 @@ class PSBTsPane(glassPane: VBox) {
   }
 
   val generalCol: HBox = new HBox {
-    alignment = Pos.TopCenter
+    alignment = Pos.BottomCenter
     spacing = 10
-    children = /* Vector(new Label("General Functions"),
-                      new Separator) ++*/ psbtButtons.generalButtons
+    children = psbtButtons.generalButtons
   }
 
   val buttonPane: HBox = new HBox {

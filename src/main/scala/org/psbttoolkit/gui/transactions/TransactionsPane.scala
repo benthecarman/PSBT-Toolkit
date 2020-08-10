@@ -1,7 +1,7 @@
 package org.psbttoolkit.gui.transactions
 
 import org.psbttoolkit.gui.TaskRunner
-import scalafx.geometry.Insets
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.TextArea
 import scalafx.scene.layout.{BorderPane, TilePane, VBox}
 
@@ -20,6 +20,7 @@ class TransactionsPane(glassPane: VBox) {
 
   private val buttonPane = new TilePane {
     hgap = 10
+    alignment = Pos.TopCenter
     children = txButtons.all
   }
 
