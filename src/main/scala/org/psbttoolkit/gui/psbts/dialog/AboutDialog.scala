@@ -18,7 +18,7 @@ object AboutDialog {
 
     dialog.dialogPane().content = new TextArea {
       text =
-        "I haven't written this yet, but remember to stack sats\n\nRepo is: https://github.com/benthecarman/PSBT-Toolkit"
+        "PSBT Toolkit v0.1.1\n\nCreated by: benthecarman\n\nRepo is: https://github.com/benthecarman/PSBT-Toolkit"
       editable = false
     }
 
