@@ -18,4 +18,12 @@ Use Launch4j on a windows machine to create psbt-toolkit.exe
 
 ## Step 4
 
-Create SHASUMS file
+Create `SHA256SUMS` file
+
+`sha256sum` each file
+
+Sign `SHA256SUMS` file with
+
+```
+gpg -u 0AD83877C1F0CD1EE9BD660AD7CC770B81FD22A8 --clear-sign SHA256SUMS
+```
