@@ -2,10 +2,13 @@ package org.psbttoolkit.gui
 
 import java.nio.file.Files
 
+import net.glxn.qrgen.core.image.ImageType
+import net.glxn.qrgen.javase.QRCode
 import org.bitcoins.core.config.{BitcoinNetworks, MainNet, TestNet3}
 import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.util.FileUtil
 import scalafx.scene.control._
+import scalafx.scene.image.ImageView
 import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import scodec.bits.ByteVector
 
@@ -56,6 +59,29 @@ private class FileMenu(model: HomeGUIModel) {
     }
   }
 
+  private val toQRCode = new MenuItem("_QR Encode") {
+    accelerator =
+      new KeyCodeCombination(KeyCode.E, KeyCombination.ControlDown) // CTRL + E
+    onAction = _ => {
+//      model.getPSBTOpt match {
+//        case Some(psbt) =>
+      val qrCode = QRCode.from("hello world")
+
+      val file = qrCode.to(ImageType.PNG).file()
+
+      println(file.getAbsolutePath)
+      println(file.getCanonicalPath)
+      println(file.getPath)
+
+      val img = new ImageView(qrCode.svg().getPath)
+
+      model.onQR(img)
+//        case None =>
+//          throw new RuntimeException("Not a valid PSBT!")
+//      }
+    }
+  }
+
   private val network: Menu = new Menu("_Network") {
     mnemonicParsing = true
 
@@ -87,7 +113,8 @@ private class FileMenu(model: HomeGUIModel) {
   val fileMenu: Menu =
     new Menu("_File") {
       mnemonicParsing = true
-      items = List(loadPSBT, exportPSBT, new SeparatorMenuItem, network)
+      items =
+        List(loadPSBT, exportPSBT, toQRCode, new SeparatorMenuItem, network)
     }
 }
 
