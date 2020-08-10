@@ -1,7 +1,7 @@
 package org.psbttoolkit.gui.crypto
 
 import org.psbttoolkit.gui.TaskRunner
-import scalafx.geometry.Insets
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.TextArea
 import scalafx.scene.layout.{BorderPane, TilePane, VBox}
 
@@ -21,6 +21,7 @@ class CryptoPane(glassPane: VBox) {
   private val buttonPane = new TilePane {
     hgap = 10
     vgap = 10
+    alignment = Pos.TopCenter
     children = buttons.all
   }
 

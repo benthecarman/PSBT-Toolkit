@@ -28,12 +28,17 @@ class CryptoButtons(model: CryptoPaneModel) {
     onAction = _ => model.signData()
   }
 
+  private val adaptSig: Button = new Button("Adapt Signature") {
+    onAction = _ => model.adaptSignature()
+  }
+
   val all: Vector[Button] = Vector(genPrivateKey,
                                    genPublicKey,
                                    privKeyToPubKey,
                                    flipEndianness,
                                    hashData,
-                                   signData)
+                                   signData,
+                                   adaptSig)
 
   // Set them to all have the same width as the largest button
   private val largest = all.maxBy(_.getWidth)

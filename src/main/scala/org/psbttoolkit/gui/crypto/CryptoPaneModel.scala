@@ -74,6 +74,20 @@ class CryptoPaneModel(resultArea: TextArea) {
     )
   }
 
+  def adaptSignature(): Unit = {
+    val resultOpt = AdaptSignatureDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Adapt Signature",
+      op = resultOpt match {
+        case Some(sig) =>
+          setResult(sig)
+        case None =>
+          ()
+      }
+    )
+  }
+
   def flipEndianness(): Unit = {
     val resultOpt = FlipEndiannessDialog.showAndWait(parentWindow.value)
 
