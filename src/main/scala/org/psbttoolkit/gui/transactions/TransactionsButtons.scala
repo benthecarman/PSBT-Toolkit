@@ -17,7 +17,16 @@ class TransactionsButtons(model: TransactionsPaneModel) {
     onAction = _ => model.constructTransaction()
   }
 
-  val all: Vector[Button] = Vector(broadcastTx, decodeTx, constructTransaction)
+  val txButtons: Vector[Button] =
+    Vector(broadcastTx, decodeTx, constructTransaction)
+
+  private val createPubKeyScript: Button = new Button("Create Pub Key Script") {
+    onAction = _ => model.createPubKeyScript()
+  }
+
+  val spkButtons: Vector[Button] = Vector(createPubKeyScript)
+
+  val all: Vector[Button] = txButtons ++ spkButtons
 
   private val largest = all.maxBy(_.getWidth)
 

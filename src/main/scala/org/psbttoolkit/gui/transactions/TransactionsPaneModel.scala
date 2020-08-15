@@ -6,10 +6,12 @@ import akka.stream.Materializer
 import akka.util.ByteString
 import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
+import org.bitcoins.crypto.NetworkElement
 import org.bitcoins.server.SerializedTransaction
 import org.psbttoolkit.gui.GlobalData.system
 import org.psbttoolkit.gui.transactions.dialog.{
   ConstructTransactionDialog,
+  CreatePubKeyScriptDialog,
   DecodeTransactionDialog
 }
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
@@ -32,7 +34,7 @@ class TransactionsPaneModel(resultArea: TextArea) {
     resultArea.text = str
   }
 
-  def setResult(tx: Transaction): Unit = {
+  def setResult(tx: NetworkElement): Unit = {
     setResult(tx.hex)
   }
 
@@ -101,6 +103,20 @@ class TransactionsPaneModel(resultArea: TextArea) {
       op = resultOpt match {
         case Some(tx) =>
           setResult(tx)
+        case None =>
+          ()
+      }
+    )
+  }
+
+  def createPubKeyScript(): Unit = {
+    val resultOpt = CreatePubKeyScriptDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Create Public Key Script",
+      op = resultOpt match {
+        case Some(spk) =>
+          setResult(spk)
         case None =>
           ()
       }
