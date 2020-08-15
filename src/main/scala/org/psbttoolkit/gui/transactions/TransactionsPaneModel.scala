@@ -5,7 +5,13 @@ import akka.http.scaladsl.client.RequestBuilding.Post
 import akka.stream.Materializer
 import akka.util.ByteString
 import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
+import org.bitcoins.core.protocol.script.ScriptPubKey
 import org.bitcoins.core.protocol.transaction.Transaction
+import org.bitcoins.core.script.constant.{
+  ScriptConstant,
+  ScriptNumberOperation,
+  ScriptToken
+}
 import org.bitcoins.crypto.NetworkElement
 import org.bitcoins.server.SerializedTransaction
 import org.psbttoolkit.gui.GlobalData.system
@@ -36,6 +42,10 @@ class TransactionsPaneModel(resultArea: TextArea) {
 
   def getTransactionOpt: Option[Transaction] = {
     Try(Transaction.fromHex(resultArea.text.value)).toOption
+  }
+
+  def getScriptOpt: Option[ScriptPubKey] = {
+    Try(ScriptPubKey.fromHex(resultArea.text.value)).toOption
   }
 
   def broadcastTx(): Unit = {
@@ -87,6 +97,32 @@ class TransactionsPaneModel(resultArea: TextArea) {
           resultOpt.map(_ => ())
         case None =>
           throw new RuntimeException("Missing Transaction")
+      }
+    )
+  }
+
+  private def tokenToString(token: ScriptToken): String = {
+    token match {
+      case numOp: ScriptNumberOperation => numOp.toString
+      case constOp: ScriptConstant      => constOp.bytes.toString
+      case otherOp: ScriptToken         => otherOp.toString
+    }
+  }
+
+  def decodeScript(): Unit = {
+    val resultOpt = getScriptOpt.map { spk =>
+      val tokens = spk.asm
+      val decoded = tokens.map(tokenToString).mkString(" ")
+      DecodeTransactionDialog.showAndWait(parentWindow.value, decoded)
+    }
+
+    taskRunner.run(
+      caption = "Decode Script",
+      op = getScriptOpt match {
+        case Some(_) =>
+          resultOpt.map(_ => ())
+        case None =>
+          throw new RuntimeException("Missing or invalid Script")
       }
     )
   }

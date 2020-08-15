@@ -20,6 +20,10 @@ class TransactionsButtons(model: TransactionsPaneModel) {
   val txButtons: Vector[Button] =
     Vector(broadcastTx, decodeTx, constructTransaction)
 
+  private val decodeScript: Button = new Button("Decode Script") {
+    onAction = _ => model.decodeScript()
+  }
+
   private val createPubKeyScript: Button = new Button("Create Pub Key Script") {
     onAction = _ => model.createPubKeyScript()
   }
@@ -34,7 +38,10 @@ class TransactionsButtons(model: TransactionsPaneModel) {
   }
 
   val spkButtons: Vector[Button] =
-    Vector(createPubKeyScript, createP2SHScript, createMultisigScript)
+    Vector(decodeScript,
+           createPubKeyScript,
+           createP2SHScript,
+           createMultisigScript)
 
   val all: Vector[Button] = txButtons ++ spkButtons
 
