@@ -101,4 +101,6 @@ object HomeGUI extends JFXApp {
     minHeight = 400
     minWidth = 400
   }
+
+  stage.sizeToScene()
 }
