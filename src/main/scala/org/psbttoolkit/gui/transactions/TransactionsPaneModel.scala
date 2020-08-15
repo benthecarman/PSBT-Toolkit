@@ -9,12 +9,7 @@ import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.crypto.NetworkElement
 import org.bitcoins.server.SerializedTransaction
 import org.psbttoolkit.gui.GlobalData.system
-import org.psbttoolkit.gui.transactions.dialog.{
-  ConstructTransactionDialog,
-  CreateP2SHScriptDialog,
-  CreatePubKeyScriptDialog,
-  DecodeTransactionDialog
-}
+import org.psbttoolkit.gui.transactions.dialog._
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
@@ -129,6 +124,20 @@ class TransactionsPaneModel(resultArea: TextArea) {
 
     taskRunner.run(
       caption = "Create P2SH Script",
+      op = resultOpt match {
+        case Some(spk) =>
+          setResult(spk)
+        case None =>
+          ()
+      }
+    )
+  }
+
+  def createMultiSigScript(): Unit = {
+    val resultOpt = CreateMultisigSPKDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Create Multisig Script",
       op = resultOpt match {
         case Some(spk) =>
           setResult(spk)
