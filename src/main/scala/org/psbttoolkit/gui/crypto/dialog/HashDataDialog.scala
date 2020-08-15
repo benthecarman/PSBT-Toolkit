@@ -3,7 +3,7 @@ package org.psbttoolkit.gui.crypto.dialog
 import javafx.event.ActionEvent
 import org.bitcoins.crypto.NetworkElement
 import org.psbttoolkit.gui.GlobalData
-import org.psbttoolkit.gui.crypto.HashAlgo
+import org.psbttoolkit.gui.crypto.types.HashAlgo
 import scalafx.Includes._
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, ComboBox, Dialog, TextField}

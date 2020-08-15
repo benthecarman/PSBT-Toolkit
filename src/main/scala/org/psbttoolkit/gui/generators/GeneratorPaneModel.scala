@@ -4,8 +4,8 @@ import org.bitcoins.core.protocol.transaction.TxUtil
 import org.bitcoins.testkit.Implicits._
 import org.bitcoins.testkit.core.gen.{PSBTGenerators, TransactionGenerators}
 import org.psbttoolkit.gui.TaskRunner
-import org.psbttoolkit.gui.generators.PSBTGenType._
-import org.psbttoolkit.gui.generators.TransactionGenType._
+import org.psbttoolkit.gui.generators.types.PSBTGenType._
+import org.psbttoolkit.gui.generators.types.TransactionGenType._
 import scalafx.beans.property.ObjectProperty
 import scalafx.stage.Window
 

@@ -1,6 +1,7 @@
 package org.psbttoolkit.gui.generators
 
 import javafx.event.ActionEvent
+import org.psbttoolkit.gui.generators.types._
 import scalafx.scene.control.{Button, ComboBox}
 
 class GeneratorButtons(model: GeneratorPaneModel) {

@@ -1,4 +1,4 @@
-package org.psbttoolkit.gui.generators
+package org.psbttoolkit.gui.generators.types
 
 sealed abstract class TransactionGenType
 

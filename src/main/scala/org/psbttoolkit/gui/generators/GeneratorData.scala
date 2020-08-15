@@ -1,5 +1,6 @@
 package org.psbttoolkit.gui.generators
 
+import org.psbttoolkit.gui.generators.types._
 import scalafx.beans.property.StringProperty
 
 object GeneratorData {

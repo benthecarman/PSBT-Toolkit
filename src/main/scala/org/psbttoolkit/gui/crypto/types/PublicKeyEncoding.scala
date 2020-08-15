@@ -1,4 +1,4 @@
-package org.psbttoolkit.gui.crypto
+package org.psbttoolkit.gui.crypto.types
 
 import org.bitcoins.crypto.StringFactory
 
