@@ -24,7 +24,11 @@ class TransactionsButtons(model: TransactionsPaneModel) {
     onAction = _ => model.createPubKeyScript()
   }
 
-  val spkButtons: Vector[Button] = Vector(createPubKeyScript)
+  private val createP2SHScript: Button = new Button("Create P2SH Script") {
+    onAction = _ => model.createP2SHScript()
+  }
+
+  val spkButtons: Vector[Button] = Vector(createPubKeyScript, createP2SHScript)
 
   val all: Vector[Button] = txButtons ++ spkButtons
 

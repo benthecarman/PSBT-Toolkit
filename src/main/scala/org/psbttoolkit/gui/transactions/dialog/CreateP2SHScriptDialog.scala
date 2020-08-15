@@ -1,15 +1,14 @@
 package org.psbttoolkit.gui.transactions.dialog
 
 import org.bitcoins.core.protocol.script.{
-  P2PKHScriptPubKey,
-  P2PKScriptPubKey,
-  P2WPKHWitnessSPKV0,
+  P2SHScriptPubKey,
+  P2WSHWitnessSPKV0,
+  RawScriptPubKey,
   ScriptPubKey
 }
-import org.bitcoins.crypto.ECPublicKey
 import org.psbttoolkit.gui.GlobalData
-import org.psbttoolkit.gui.transactions.types.PubKeyScriptType._
-import org.psbttoolkit.gui.transactions.types.PubKeyScriptType
+import org.psbttoolkit.gui.transactions.types.P2SHScriptType
+import org.psbttoolkit.gui.transactions.types.P2SHScriptType._
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import scalafx.geometry.Insets
@@ -17,29 +16,29 @@ import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
 
-object CreatePubKeyScriptDialog {
+object CreateP2SHScriptDialog {
 
   def showAndWait(parentWindow: Window): Option[ScriptPubKey] = {
     val dialog = new Dialog[Option[ScriptPubKey]]() {
       initOwner(parentWindow)
-      title = "Create Public Key Script"
+      title = "Create P2SH Script"
     }
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK, ButtonType.Cancel)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
-    val pubkeyTF = new TextField() {
+    val scriptTF = new TextField() {
       promptText = "Hex Encoded"
     }
 
-    var scriptType: PubKeyScriptType = P2WPKH
+    var scriptType: P2SHScriptType = P2SH
 
     val scriptTypeSelector: ComboBox[String] = new ComboBox(
-      PubKeyScriptType.names) {
-      value = P2WPKH.toString
+      P2SHScriptType.names) {
+      value = P2SH.toString
 
       onAction = (_: ActionEvent) => {
-        scriptType = PubKeyScriptType.fromString(value.value)
+        scriptType = P2SHScriptType.fromString(value.value)
       }
     }
 
@@ -48,29 +47,28 @@ object CreatePubKeyScriptDialog {
       vgap = 10
       padding = Insets(20, 100, 10, 10)
 
-      add(new Label("Public Key"), 0, 0)
-      add(pubkeyTF, 1, 0)
+      add(new Label("Redeem Script"), 0, 0)
+      add(scriptTF, 1, 0)
       add(scriptTypeSelector, 2, 0)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== pubkeyTF.text.isEmpty
+    okButton.disable <== scriptTF.text.isEmpty
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
-        val keyStr = pubkeyTF.text.value
-        val key = ECPublicKey(keyStr)
-
         scriptType match {
-          case P2WPKH =>
-            Some(P2WPKHWitnessSPKV0(key))
-          case P2PKH =>
-            Some(P2PKHScriptPubKey(key))
-          case P2PK =>
-            Some(P2PKScriptPubKey(key))
+          case P2SH =>
+            val scriptStr = scriptTF.text.value
+            val script = ScriptPubKey(scriptStr)
+            Some(P2SHScriptPubKey(script))
+          case P2WSH =>
+            val scriptStr = scriptTF.text.value
+            val script = RawScriptPubKey(scriptStr)
+            Some(P2WSHWitnessSPKV0(script))
         }
       } else None
 

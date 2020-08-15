@@ -1,4 +1,4 @@
-package org.psbttoolkit.gui.transactions
+package org.psbttoolkit.gui.transactions.types
 
 import org.bitcoins.crypto.StringFactory
 

@@ -11,6 +11,7 @@ import org.bitcoins.server.SerializedTransaction
 import org.psbttoolkit.gui.GlobalData.system
 import org.psbttoolkit.gui.transactions.dialog.{
   ConstructTransactionDialog,
+  CreateP2SHScriptDialog,
   CreatePubKeyScriptDialog,
   DecodeTransactionDialog
 }
@@ -114,6 +115,20 @@ class TransactionsPaneModel(resultArea: TextArea) {
 
     taskRunner.run(
       caption = "Create Public Key Script",
+      op = resultOpt match {
+        case Some(spk) =>
+          setResult(spk)
+        case None =>
+          ()
+      }
+    )
+  }
+
+  def createP2SHScript(): Unit = {
+    val resultOpt = CreateP2SHScriptDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Create P2SH Script",
       op = resultOpt match {
         case Some(spk) =>
           setResult(spk)
