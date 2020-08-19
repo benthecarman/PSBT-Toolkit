@@ -87,7 +87,9 @@ class TransactionsPaneModel(resultArea: TextArea) {
   def decodeTransaction(): Unit = {
     val resultOpt = getTransactionOpt.map { tx =>
       val decoded = SerializedTransaction.decodeRawTransaction(tx)
-      DecodeTransactionDialog.showAndWait(parentWindow.value, decoded)
+      DecodedDataDialog.showAndWait(parentWindow.value,
+                                    "Decoded Transaction",
+                                    decoded)
     }
 
     taskRunner.run(
@@ -113,7 +115,9 @@ class TransactionsPaneModel(resultArea: TextArea) {
     val resultOpt = getScriptOpt.map { spk =>
       val tokens = spk.asm
       val decoded = tokens.map(tokenToString).mkString(" ")
-      DecodeTransactionDialog.showAndWait(parentWindow.value, decoded)
+      DecodedDataDialog.showAndWait(parentWindow.value,
+        "Decoded Script",
+        decoded)
     }
 
     taskRunner.run(
