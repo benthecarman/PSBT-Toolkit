@@ -186,4 +186,19 @@ class TransactionsPaneModel(resultArea: TextArea) {
       }
     )
   }
+
+  def createConditionalScript(): Unit = {
+    val resultOpt =
+      CreateConditionalScriptDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Create Conditional Script",
+      op = resultOpt match {
+        case Some(spk) =>
+          setResult(spk)
+        case None =>
+          ()
+      }
+    )
+  }
 }

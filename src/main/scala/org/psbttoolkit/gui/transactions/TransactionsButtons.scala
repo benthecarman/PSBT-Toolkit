@@ -37,11 +37,17 @@ class TransactionsButtons(model: TransactionsPaneModel) {
     onAction = _ => model.createMultiSigScript()
   }
 
+  private val createConditionalScript: Button = new Button(
+    "Create Conditional Script") {
+    onAction = _ => model.createConditionalScript()
+  }
+
   val spkButtons: Vector[Button] =
     Vector(decodeScript,
            createPubKeyScript,
            createP2SHScript,
-           createMultisigScript)
+           createMultisigScript,
+           createConditionalScript)
 
   val all: Vector[Button] = txButtons ++ spkButtons
 
