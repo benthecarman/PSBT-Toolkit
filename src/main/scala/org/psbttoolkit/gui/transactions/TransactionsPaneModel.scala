@@ -116,8 +116,8 @@ class TransactionsPaneModel(resultArea: TextArea) {
       val tokens = spk.asm
       val decoded = tokens.map(tokenToString).mkString(" ")
       DecodedDataDialog.showAndWait(parentWindow.value,
-        "Decoded Script",
-        decoded)
+                                    "Decoded Script",
+                                    decoded)
     }
 
     taskRunner.run(

@@ -8,7 +8,10 @@ import scalafx.stage.Window
 
 object DecodedDataDialog {
 
-  def showAndWait(parentWindow: Window, titleStr: String, decoded: String): Unit = {
+  def showAndWait(
+      parentWindow: Window,
+      titleStr: String,
+      decoded: String): Unit = {
 
     val _ = new Dialog[Unit]() {
       initOwner(parentWindow)
