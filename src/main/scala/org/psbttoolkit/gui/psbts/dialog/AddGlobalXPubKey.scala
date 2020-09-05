@@ -72,7 +72,7 @@ object AddGlobalXPubKey {
   }
 
   private def getExtKey(str: String): Try[ExtPublicKey] = {
-    ExtPublicKey.fromString(str) match {
+    ExtPublicKey.fromStringT(str) match {
       case Success(key) => Success(key)
       case Failure(_) =>
         Try(ExtPublicKey.fromHex(str))

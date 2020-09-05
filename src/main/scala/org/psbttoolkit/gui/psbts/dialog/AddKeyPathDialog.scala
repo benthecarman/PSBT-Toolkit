@@ -76,7 +76,7 @@ object AddKeyPathDialog {
   }
 
   private def getExtKey(str: String): Try[ExtKey] = {
-    ExtKey.fromString(str) match {
+    ExtKey.fromStringT(str) match {
       case Success(key) => Success(key)
       case Failure(_) =>
         Try(ExtKey.fromHex(str))
