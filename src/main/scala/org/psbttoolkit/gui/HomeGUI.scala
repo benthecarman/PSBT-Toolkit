@@ -103,4 +103,8 @@ object HomeGUI extends JFXApp {
   }
 
   stage.sizeToScene()
+
+  override def stopApp(): Unit = {
+    sys.exit()
+  }
 }

@@ -42,6 +42,10 @@ class TransactionsButtons(model: TransactionsPaneModel) {
     onAction = _ => model.createConditionalScript()
   }
 
+  val createAddress: Button = new Button("Create Address") {
+    onAction = _ => model.createAddress()
+  }
+
   val spkButtons: Vector[Button] =
     Vector(decodeScript,
            createPubKeyScript,

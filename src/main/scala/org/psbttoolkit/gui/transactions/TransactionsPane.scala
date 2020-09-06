@@ -46,7 +46,7 @@ class TransactionsPane(glassPane: VBox) {
     padding = Insets(top = 20, right = 0, bottom = 0, left = 0)
     spacing = 10
     val spkTitle = new Label("Script Pub Keys")
-    children = Vector(spkTitle, spkButtonPane)
+    children = Vector(spkTitle, spkButtonPane, txButtons.createAddress)
     alignment = Pos.TopCenter
   }
 

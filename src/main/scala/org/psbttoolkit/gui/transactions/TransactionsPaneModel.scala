@@ -201,4 +201,19 @@ class TransactionsPaneModel(resultArea: TextArea) {
       }
     )
   }
+
+  def createAddress(): Unit = {
+    val resultOpt =
+      CreateAddressDialog.showAndWait(parentWindow.value)
+
+    taskRunner.run(
+      caption = "Create Address",
+      op = resultOpt match {
+        case Some(address) =>
+          setResult(address.toString())
+        case None =>
+          ()
+      }
+    )
+  }
 }

@@ -2,7 +2,7 @@ package org.psbttoolkit.gui
 
 import java.nio.file.Files
 
-import org.bitcoins.core.config.{BitcoinNetworks, MainNet, TestNet3}
+import org.bitcoins.core.config.{BitcoinNetworks, MainNet, RegTest, TestNet3}
 import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.util.FileUtil
 import scalafx.scene.control._
@@ -73,7 +73,13 @@ private class FileMenu(model: HomeGUIModel) {
       id = TestNet3.toString
     }
 
-    items = List(mainnetToggle, testnetToggle)
+    private val regtestToggle: RadioMenuItem = new RadioMenuItem("Regtest") {
+      toggleGroup = networkToggle
+      selected = GlobalData.network == RegTest
+      id = RegTest.toString
+    }
+
+    items = List(mainnetToggle, testnetToggle, regtestToggle)
 
     onAction = _ => {
       val selectedId = networkToggle.selectedToggle.value
