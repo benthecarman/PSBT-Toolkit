@@ -1,10 +1,11 @@
 package org.psbttoolkit.gui
 
+import javafx.stage.WindowEvent
 import org.psbttoolkit.gui.crypto.CryptoPane
 import org.psbttoolkit.gui.generators.GeneratorsPane
 import org.psbttoolkit.gui.psbts.PSBTsPane
 import org.psbttoolkit.gui.transactions.TransactionsPane
-import scalafx.application.JFXApp
+import scalafx.application.{JFXApp, Platform}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert.AlertType
@@ -103,6 +104,10 @@ object HomeGUI extends JFXApp {
   }
 
   stage.sizeToScene()
+
+  stage.setOnCloseRequest((_: WindowEvent) => {
+    Platform.exit()
+  })
 
   override def stopApp(): Unit = {
     sys.exit()
