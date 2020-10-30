@@ -56,7 +56,8 @@ object AddRedeemScriptDialog {
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
         Some(
-          (indexTF.text.value.toInt, ScriptPubKey(redeemScriptTF.text.value)))
+          (indexTF.text.value.toInt,
+           ScriptPubKey.fromAsmHex(redeemScriptTF.text.value)))
       } else None
 
     dialog.showAndWait() match {

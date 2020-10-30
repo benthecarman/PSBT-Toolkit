@@ -4,7 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.client.RequestBuilding.Get
 import akka.stream.Materializer
 import akka.util.ByteString
-import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
+import org.bitcoins.core.config.{MainNet, RegTest, SigNet, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.core.psbt.GlobalPSBTRecord.{Version, XPubKey}
 import org.bitcoins.core.psbt._
@@ -468,9 +468,9 @@ class PSBTsPaneModel(resultArea: TextArea) {
           s"https://blockstream.info/api/tx/${txIdBE.hex}/hex"
         case TestNet3 =>
           s"https://blockstream.info/testnet/api/tx/${txIdBE.hex}/hex"
-        case RegTest =>
+        case RegTest | SigNet =>
           throw new IllegalArgumentException(
-            "Unable broadcast a regtest transaction")
+            "Unable broadcast a regtest or signet transaction")
       }
 
       Http()

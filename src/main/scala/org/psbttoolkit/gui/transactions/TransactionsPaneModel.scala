@@ -4,7 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.client.RequestBuilding.Post
 import akka.stream.Materializer
 import akka.util.ByteString
-import org.bitcoins.core.config.{MainNet, RegTest, TestNet3}
+import org.bitcoins.core.config.{MainNet, RegTest, SigNet, TestNet3}
 import org.bitcoins.core.protocol.script.ScriptPubKey
 import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.core.script.constant.{
@@ -61,9 +61,9 @@ class TransactionsPaneModel(resultArea: TextArea) {
               "https://blockstream.info/api/tx"
             case TestNet3 =>
               "https://blockstream.info/testnet/api/tx"
-            case RegTest =>
+            case RegTest | SigNet =>
               throw new IllegalArgumentException(
-                "Unable broadcast a regtest transaction")
+                "Unable broadcast a regtest or signet transaction")
           }
 
           val resultF = Http()
