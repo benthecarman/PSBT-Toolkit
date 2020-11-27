@@ -4,6 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.client.RequestBuilding.Get
 import akka.stream.Materializer
 import akka.util.ByteString
+import org.bitcoins.commons.jsonmodels.SerializedPSBT
 import org.bitcoins.core.config.{MainNet, RegTest, SigNet, TestNet3}
 import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.core.psbt.GlobalPSBTRecord.{Version, XPubKey}
@@ -11,12 +12,16 @@ import org.bitcoins.core.psbt._
 import org.bitcoins.crypto.DoubleSha256DigestBE
 import org.psbttoolkit.gui.GlobalData.system
 import org.psbttoolkit.gui.psbts.dialog._
+import org.psbttoolkit.gui.transactions.dialog.DecodedDataDialog
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
+import play.api.libs.json.Json
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
 import scodec.bits.ByteVector
+import ujson._
 
+import scala.collection.mutable
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
 
@@ -51,6 +56,89 @@ class PSBTsPaneModel(resultArea: TextArea) {
             case Failure(exception) =>
               throw exception
           }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
+  def decodePSBT(): Unit = {
+    val resultOpt = getPSBTOpt.map { psbt =>
+      val decoded = SerializedPSBT.decodePSBT(psbt)
+      DecodedDataDialog.showAndWait(parentWindow.value,
+                                    "Decoded PSBT",
+                                    Json.prettyPrint(decoded.toJson))
+    }
+
+    taskRunner.run(
+      caption = "Decode PSBT",
+      op = getPSBTOpt match {
+        case Some(_) =>
+          resultOpt.map(_ => ())
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
+  def analyzePSBT(): Unit = {
+    val resultOpt = getPSBTOpt.map { psbt =>
+      val inputs = psbt.inputMaps.zipWithIndex.map {
+        case (inputMap, index) =>
+          val txIn = psbt.transaction.inputs(index)
+          val vout = txIn.previousOutput.vout.toInt
+          val nextRole = inputMap.nextRole(txIn)
+          val hasUtxo = inputMap.prevOutOpt(vout).isDefined
+          val isFinalized = inputMap.isFinalized
+          val missingSigs = inputMap.missingSignatures(vout)
+
+          if (missingSigs.isEmpty) {
+            Obj(
+              "has_utxo" -> Bool(hasUtxo),
+              "is_final" -> Bool(isFinalized),
+              "next" -> Str(nextRole.shortName)
+            )
+          } else {
+            Obj(
+              "has_utxo" -> Bool(hasUtxo),
+              "is_final" -> Bool(isFinalized),
+              "missing_sigs" -> missingSigs.map(hash => Str(hash.hex)),
+              "next" -> Str(nextRole.shortName)
+            )
+          }
+      }
+
+      val optionalsJson: Vector[(String, Num)] = {
+        val fee =
+          psbt.feeOpt.map(fee => "fee" -> Num(fee.satoshis.toLong.toDouble))
+        val vsize =
+          psbt.estimateVSize.map(vsize =>
+            "estimated_vsize" -> Num(vsize.toDouble))
+        val feeRate = psbt.estimateSatsPerVByte.map(feeRate =>
+          "estimated_sats_vbyte" -> Num(feeRate.toLong.toDouble))
+
+        Vector(fee, vsize, feeRate).flatten
+      }
+
+      val inputJson = Vector("inputs" -> Arr.from(inputs))
+      val nextRoleJson: Vector[(String, Str)] =
+        Vector("next" -> Str(psbt.nextRole.shortName))
+
+      val jsonVec: Vector[(String, Value)] =
+        inputJson ++ optionalsJson ++ nextRoleJson
+      val jsonMap = mutable.LinkedHashMap(jsonVec: _*)
+      val json = Obj(jsonMap)
+
+      DecodedDataDialog.showAndWait(parentWindow.value,
+                                    "Analyzed PSBT",
+                                    json.render(2))
+    }
+
+    taskRunner.run(
+      caption = "Decode PSBT",
+      op = getPSBTOpt match {
+        case Some(_) =>
+          resultOpt.map(_ => ())
         case None =>
           throw new RuntimeException("Missing PSBT")
       }
@@ -177,8 +265,8 @@ class PSBTsPaneModel(resultArea: TextArea) {
       op = getPSBTOpt match {
         case Some(psbt) =>
           resultOpt match {
-            case Some((index, extKey, path)) =>
-              val updated = psbt.addKeyPathToInput(extKey, path, index)
+            case Some((index, extKey, pubkey, path)) =>
+              val updated = psbt.addKeyPathToInput(extKey, path, pubkey, index)
               setResult(updated.base64)
             case None =>
               ()
@@ -199,8 +287,8 @@ class PSBTsPaneModel(resultArea: TextArea) {
       op = getPSBTOpt match {
         case Some(psbt) =>
           resultOpt match {
-            case Some((index, extKey, path)) =>
-              val updated = psbt.addKeyPathToOutput(extKey, path, index)
+            case Some((index, extKey, pubkey, path)) =>
+              val updated = psbt.addKeyPathToOutput(extKey, path, pubkey, index)
               setResult(updated.base64)
             case None =>
               ()

@@ -1,8 +1,10 @@
 package org.psbttoolkit.gui.transactions.dialog
 
+import javafx.scene.paint.Color
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes.jfxDialogPane2sfx
-import scalafx.scene.control.{ButtonType, Dialog, ScrollPane, TextArea}
+import scalafx.beans.property.ObjectProperty
+import scalafx.scene.control._
 import scalafx.scene.text.Text
 import scalafx.stage.Window
 
@@ -23,7 +25,9 @@ object DecodedDataDialog {
         new TextArea(decoded)
       } else {
         new ScrollPane() {
-          content = new Text(decoded)
+          content = new Text(decoded) {
+            fill <== ObjectProperty(Color.WHITE)
+          }
         }
       }
 

@@ -82,6 +82,14 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.fromUnsignedTransaction()
   }
 
+  private val decodePSBT: Button = new Button("Decode") {
+    onAction = _ => model.decodePSBT()
+  }
+
+  private val analyzePSBT: Button = new Button("Analyze") {
+    onAction = _ => model.analyzePSBT()
+  }
+
   private val combinePSBTs: Button = new Button("Combine PSBTs") {
     onAction = _ => model.combinePSBTs()
   }
@@ -99,10 +107,13 @@ class PSBTButtons(model: PSBTsPaneModel) {
   }
 
   val generalButtons: Vector[Button] =
-    Vector(fromUnsignedTx, combinePSBTs, finalizePSBT, extractTx, fetchData)
+    Vector(fromUnsignedTx, decodePSBT, analyzePSBT)
+
+  val general2Buttons: Vector[Button] =
+    Vector(combinePSBTs, finalizePSBT, extractTx, fetchData)
 
   private val all: Vector[Button] =
-    globalButtons ++ inputButtons ++ outputButtons ++ generalButtons
+    globalButtons ++ inputButtons ++ outputButtons ++ generalButtons ++ general2Buttons
 
   // Set them to all have the same width as the largest button
   // TODO: figure out how todo this dynamically

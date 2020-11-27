@@ -2,9 +2,9 @@ package org.psbttoolkit.gui.psbts.dialog
 
 import org.bitcoins.core.crypto.ExtKey
 import org.bitcoins.core.hd.BIP32Path
+import org.bitcoins.crypto.ECPublicKey
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
-import scalafx.application.Platform
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
 import scalafx.scene.layout.GridPane
@@ -16,11 +16,11 @@ object AddKeyPathDialog {
 
   def showAndWait(
       isInput: Boolean,
-      parentWindow: Window): Option[(Int, ExtKey, BIP32Path)] = {
+      parentWindow: Window): Option[(Int, ExtKey, ECPublicKey, BIP32Path)] = {
 
     val typeStr = if (isInput) "Input" else "Output"
 
-    val dialog = new Dialog[Option[(Int, ExtKey, BIP32Path)]]() {
+    val dialog = new Dialog[Option[(Int, ExtKey, ECPublicKey, BIP32Path)]]() {
       initOwner(parentWindow)
       title = s"Add $typeStr Key Path"
     }
@@ -32,9 +32,8 @@ object AddKeyPathDialog {
     val extKeyTF = new TextField() {
       promptText = "hex or base64"
     }
-    val keyPathTF = new TextField() {
-      promptText = "hex or base64"
-    }
+    val pubKeyTF = new TextField()
+    val keyPathTF = new TextField()
 
     dialog.dialogPane().content = new GridPane {
       hgap = 10
@@ -51,13 +50,14 @@ object AddKeyPathDialog {
 
       addRow(s"$typeStr Index", indexTF)
       addRow("Ext Key", extKeyTF)
+      addRow("Pub Key", pubKeyTF)
       addRow("Key Path", keyPathTF)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== indexTF.text.isEmpty || extKeyTF.text.isEmpty || keyPathTF.text.isEmpty
+    okButton.disable <== indexTF.text.isEmpty || extKeyTF.text.isEmpty || pubKeyTF.text.isEmpty || keyPathTF.text.isEmpty
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
@@ -65,12 +65,15 @@ object AddKeyPathDialog {
         Some(
           (indexTF.text.value.toInt,
            getExtKey(extKeyTF.text.value).get,
+           ECPublicKey(pubKeyTF.text.value),
            getBIP32Path(keyPathTF.text.value).get))
       } else None
 
     dialog.showAndWait() match {
-      case Some(Some((index: Int, ext: ExtKey, path: BIP32Path))) =>
-        Some((index, ext, path))
+      case Some(
+            Some(
+              (index: Int, ext: ExtKey, key: ECPublicKey, path: BIP32Path))) =>
+        Some((index, ext, key, path))
       case Some(_) | None => None
     }
   }

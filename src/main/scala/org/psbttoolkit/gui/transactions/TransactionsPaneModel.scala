@@ -4,6 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.client.RequestBuilding.Post
 import akka.stream.Materializer
 import akka.util.ByteString
+import org.bitcoins.commons.jsonmodels.SerializedTransaction
 import org.bitcoins.core.config.{MainNet, RegTest, SigNet, TestNet3}
 import org.bitcoins.core.protocol.script.ScriptPubKey
 import org.bitcoins.core.protocol.transaction.Transaction
@@ -13,10 +14,10 @@ import org.bitcoins.core.script.constant.{
   ScriptToken
 }
 import org.bitcoins.crypto.NetworkElement
-import org.bitcoins.server.SerializedTransaction
 import org.psbttoolkit.gui.GlobalData.system
 import org.psbttoolkit.gui.transactions.dialog._
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
+import play.api.libs.json.Json
 import scalafx.beans.property.ObjectProperty
 import scalafx.scene.control.TextArea
 import scalafx.stage.Window
@@ -89,7 +90,7 @@ class TransactionsPaneModel(resultArea: TextArea) {
       val decoded = SerializedTransaction.decodeRawTransaction(tx)
       DecodedDataDialog.showAndWait(parentWindow.value,
                                     "Decoded Transaction",
-                                    decoded)
+                                    Json.prettyPrint(decoded.toJson))
     }
 
     taskRunner.run(
