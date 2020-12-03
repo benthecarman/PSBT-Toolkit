@@ -1,0 +1,4 @@
+<!-- This needs to be named logback-test.xml because we depend on Bitcoin-S testkit -->
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+</configuration>
