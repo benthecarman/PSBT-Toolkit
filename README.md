@@ -1,6 +1,6 @@
 # PSBT-Toolkit
 
-[![Build Status](https://github.com/benthecarman/psbt-tooklkit/workflows/Compile%20Check/badge.svg)](https://github.com/benthecarman/psbt-toolkit/actions)
+[![Build Status](https://github.com/benthecarman/PSBT-Toolkit/workflows/Compile%20Check/badge.svg)](https://github.com/benthecarman/PSBT-Toolkit/actions)
 
 PSBT Toolkit aims to give you a nice gui that gives you functionality for PSBT interactions.
 There are functions to serve the Creator, Updater, Combiner, Input Finalizer, and Transaction Extractor roles, as well as some utility functions for transactions,
