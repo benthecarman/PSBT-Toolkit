@@ -2,8 +2,13 @@ package org.psbttoolkit.gui
 
 import akka.actor.ActorSystem
 import org.bitcoins.core.config._
+import org.bitcoins.rpc.client.common.BitcoindRpcClient
+import org.bitcoins.rpc.config.BitcoindInstance
 import org.psbttoolkit.gui.settings.Themes
 import scalafx.beans.property.StringProperty
+
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
 
 object GlobalData {
 
@@ -22,5 +27,15 @@ object GlobalData {
       Seq.empty
     }
 
-  var network: BitcoinNetwork = TestNet3
+  var network: BitcoinNetwork = MainNet
+
+  lazy val bitcoindInstance: BitcoindInstance =
+    BitcoindInstance.fromConfigFile()
+  lazy val bitcoindRpc: BitcoindRpcClient = BitcoindRpcClient(bitcoindInstance)
+
+  lazy val useBitcoind: Boolean = {
+    val startedF = bitcoindRpc.isStartedF
+
+    Await.result(startedF, 30.seconds)
+  }
 }

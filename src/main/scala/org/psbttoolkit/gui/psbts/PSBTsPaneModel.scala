@@ -10,7 +10,7 @@ import org.bitcoins.core.protocol.transaction.Transaction
 import org.bitcoins.core.psbt.GlobalPSBTRecord.{Version, XPubKey}
 import org.bitcoins.core.psbt._
 import org.bitcoins.crypto.DoubleSha256DigestBE
-import org.psbttoolkit.gui.GlobalData.system
+import org.psbttoolkit.gui.GlobalData.{bitcoindRpc, system, useBitcoind}
 import org.psbttoolkit.gui.psbts.dialog._
 import org.psbttoolkit.gui.transactions.dialog.DecodedDataDialog
 import org.psbttoolkit.gui.{GlobalData, TaskRunner}
@@ -546,27 +546,32 @@ class PSBTsPaneModel(resultArea: TextArea) {
     )
   }
 
-  def addBlockExplorerData(): Unit = {
+  def addBitcoindData(): Unit = {
     implicit val m: Materializer = Materializer(system)
     implicit val ec: ExecutionContextExecutor = m.executionContext
 
-    def makeCall(txIdBE: DoubleSha256DigestBE): Future[String] = {
-      val url = GlobalData.network match {
-        case MainNet =>
-          s"https://blockstream.info/api/tx/${txIdBE.hex}/hex"
-        case TestNet3 =>
-          s"https://blockstream.info/testnet/api/tx/${txIdBE.hex}/hex"
-        case RegTest | SigNet =>
-          throw new IllegalArgumentException(
-            "Unable broadcast a regtest or signet transaction")
-      }
+    def makeCall(txIdBE: DoubleSha256DigestBE): Future[Transaction] = {
+      if (useBitcoind) {
+        bitcoindRpc.getRawTransactionRaw(txIdBE)
+      } else {
+        val url = GlobalData.network match {
+          case MainNet =>
+            s"https://blockstream.info/api/tx/${txIdBE.hex}/hex"
+          case TestNet3 =>
+            s"https://blockstream.info/testnet/api/tx/${txIdBE.hex}/hex"
+          case RegTest | SigNet =>
+            throw new IllegalArgumentException(
+              "Unable broadcast a regtest or signet transaction")
+        }
 
-      Http()
-        .singleRequest(Get(url))
-        .flatMap(response =>
-          response.entity.dataBytes
-            .runFold(ByteString.empty)(_ ++ _)
-            .map(payload => payload.decodeString(ByteString.UTF_8)))
+        Http()
+          .singleRequest(Get(url))
+          .flatMap(response =>
+            response.entity.dataBytes
+              .runFold(ByteString.empty)(_ ++ _)
+              .map(payload =>
+                Transaction.fromHex(payload.decodeString(ByteString.UTF_8))))
+      }
     }
 
     taskRunner.run[Future[Unit]](
@@ -577,9 +582,7 @@ class PSBTsPaneModel(resultArea: TextArea) {
             emptyPsbt.transaction.inputs.map(_.previousOutput.txIdBE)
 
           val prevTxFs = prevTxIdBEs.map(makeCall)
-          Future.sequence(prevTxFs).map { prevTxStrs =>
-            val prevTxs = prevTxStrs.map(Transaction.fromHex).toVector
-
+          Future.sequence(prevTxFs).map { prevTxs =>
             val psbt = prevTxs.zipWithIndex.foldLeft(emptyPsbt) {
               case (accumPSBT, (tx, index)) =>
                 accumPSBT.addUTXOToInput(tx, index)

@@ -103,7 +103,7 @@ class PSBTButtons(model: PSBTsPaneModel) {
   }
 
   private val fetchData: Button = new Button("Fetch Data") {
-    onAction = _ => model.addBlockExplorerData()
+    onAction = _ => model.addBitcoindData()
   }
 
   val generalButtons: Vector[Button] =
