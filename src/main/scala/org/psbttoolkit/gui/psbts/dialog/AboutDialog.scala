@@ -16,9 +16,11 @@ object AboutDialog {
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
+    val version: String = getClass.getPackage.getImplementationVersion
+
     dialog.dialogPane().content = new TextArea {
       text =
-        "PSBT Toolkit v0.1.2\n\nCreated by: benthecarman\n\nRepo is: https://github.com/benthecarman/PSBT-Toolkit"
+        s"PSBT Toolkit v$version\n\nCreated by: benthecarman\n\nRepo is: https://github.com/benthecarman/PSBT-Toolkit"
       editable = false
     }
 
