@@ -32,7 +32,7 @@ class PSBTButtons(model: PSBTsPaneModel) {
   }
 
   private val addWitnessUTXO: Button = new Button("Add Witness UTXO") {
-    onAction = _ => model.addNonWitnessUTXO()
+    onAction = _ => model.addWitnessUTXO()
   }
 
   private val addInputRedeemScript: Button = new Button(
