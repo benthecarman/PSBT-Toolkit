@@ -233,6 +233,28 @@ class PSBTsPaneModel(resultArea: TextArea) {
     )
   }
 
+  def addInputWitnessScript(): Unit = {
+    val resultOpt = getPSBTOpt.flatMap { _ =>
+      AddWitnessScriptDialog.showAndWait(isInput = true, parentWindow.value)
+    }
+
+    taskRunner.run(
+      caption = "Add Input Witness Script",
+      op = getPSBTOpt match {
+        case Some(psbt) =>
+          resultOpt match {
+            case Some((index, spk)) =>
+              val updated = psbt.addScriptWitnessToInput(spk, index)
+              setResult(updated.base64)
+            case None =>
+              ()
+          }
+        case None =>
+          throw new RuntimeException("Missing PSBT")
+      }
+    )
+  }
+
   def addOutputRedeemScript(): Unit = {
     val resultOpt = getPSBTOpt.flatMap { _ =>
       AddRedeemScriptDialog.showAndWait(isInput = false, parentWindow.value)

@@ -1,15 +1,13 @@
 package org.psbttoolkit.gui.generators
 
 import org.bitcoins.core.protocol.transaction.TxUtil
-import org.bitcoins.testkit.Implicits._
-import org.bitcoins.testkit.core.gen.{PSBTGenerators, TransactionGenerators}
+import org.bitcoins.testkitcore.Implicits._
+import org.bitcoins.testkitcore.gen._
 import org.psbttoolkit.gui.TaskRunner
 import org.psbttoolkit.gui.generators.types.PSBTGenType._
 import org.psbttoolkit.gui.generators.types.TransactionGenType._
 import scalafx.beans.property.ObjectProperty
 import scalafx.stage.Window
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class GeneratorPaneModel() {
   var taskRunner: TaskRunner = _
@@ -21,22 +19,21 @@ class GeneratorPaneModel() {
 
   def genPSBT(): Unit = {
 
-    val dataF = GeneratorData.psbtGenType match {
+    lazy val data = GeneratorData.psbtGenType match {
       case ArbitraryPSBT =>
-        PSBTGenerators.arbitraryPSBT.sampleSome.map(_.base64)
+        PSBTGenerators.arbitraryPSBT.sampleSome.base64
       case FinalizedPSBT =>
-        PSBTGenerators.finalizedPSBT.sampleSome.map(_.base64)
+        PSBTGenerators.finalizedPSBT.sampleSome.base64
       case FullNonFinalizedPSBT =>
-        PSBTGenerators.fullNonFinalizedPSBT.sampleSome.map(_.base64)
+        PSBTGenerators.fullNonFinalizedPSBT.sampleSome.base64
       case PSBTWithUnknowns =>
-        PSBTGenerators.psbtWithUnknowns.sampleSome.map(_.base64)
+        PSBTGenerators.psbtWithUnknowns.sampleSome.base64
       case PSBTWithUnknownVersion =>
-        PSBTGenerators.psbtWithUnknownVersion.sampleSome.map(_.base64)
+        PSBTGenerators.psbtWithUnknownVersion.sampleSome.base64
     }
 
-    taskRunner.run(
-      caption = s"Generate ${GeneratorData.psbtGenType}",
-      op = dataF.map(data => GeneratorData.generatedData.value = data))
+    taskRunner.run(caption = s"Generate ${GeneratorData.psbtGenType}",
+                   op = GeneratorData.generatedData.value = data)
   }
 
   def genTx(): Unit = {

@@ -2,8 +2,8 @@ package org.psbttoolkit.gui.crypto.dialog
 
 import org.bitcoins.crypto.{ECPrivateKey, ECPublicKey, NetworkElement}
 import org.psbttoolkit.gui.GlobalData
-import org.psbttoolkit.gui.crypto.types.SignatureSchema._
 import org.psbttoolkit.gui.crypto.types.SignatureSchema
+import org.psbttoolkit.gui.crypto.types.SignatureSchema._
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import scalafx.geometry.Insets
@@ -11,8 +11,6 @@ import scalafx.scene.control._
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
 import scodec.bits.ByteVector
-
-import scala.concurrent.ExecutionContext.global
 
 object SignDataDialog {
 
@@ -103,7 +101,7 @@ object SignDataDialog {
 
         signSchema match {
           case ECDSA =>
-            Some(key.signLowR(bytes)(global))
+            Some(key.signLowR(bytes))
           case Schnorr =>
             Some(key.schnorrSign(bytes))
           case AdaptorSign =>

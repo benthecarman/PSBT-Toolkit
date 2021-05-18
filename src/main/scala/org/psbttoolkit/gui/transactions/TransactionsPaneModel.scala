@@ -5,14 +5,10 @@ import akka.http.scaladsl.client.RequestBuilding.Post
 import akka.stream.Materializer
 import akka.util.ByteString
 import org.bitcoins.commons.jsonmodels.SerializedTransaction
-import org.bitcoins.core.config.{MainNet, RegTest, SigNet, TestNet3}
+import org.bitcoins.core.config._
 import org.bitcoins.core.protocol.script.ScriptPubKey
 import org.bitcoins.core.protocol.transaction.Transaction
-import org.bitcoins.core.script.constant.{
-  ScriptConstant,
-  ScriptNumberOperation,
-  ScriptToken
-}
+import org.bitcoins.core.script.constant._
 import org.bitcoins.crypto.NetworkElement
 import org.psbttoolkit.gui.GlobalData.system
 import org.psbttoolkit.gui.transactions.dialog._

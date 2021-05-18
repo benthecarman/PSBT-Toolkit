@@ -4,7 +4,6 @@ import org.bitcoins.core.crypto.ExtPublicKey
 import org.bitcoins.core.hd.BIP32Path
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
-import scalafx.application.Platform
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
 import scalafx.scene.layout.GridPane

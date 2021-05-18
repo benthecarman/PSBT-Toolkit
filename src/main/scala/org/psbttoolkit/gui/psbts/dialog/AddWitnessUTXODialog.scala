@@ -3,7 +3,6 @@ package org.psbttoolkit.gui.psbts.dialog
 import org.bitcoins.core.protocol.transaction.TransactionOutput
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
-import scalafx.application.Platform
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
 import scalafx.scene.layout.GridPane

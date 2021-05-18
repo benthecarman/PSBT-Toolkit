@@ -16,7 +16,7 @@ object Deps {
 
     val scodecV = "1.1.17"
     val scalaFxV = "14-R19"
-    val bitcoinsV = "0.4.0+185-92ac986b-SNAPSHOT"
+    val bitcoinsV = "0.6.0"
     val javaFxV = "14.0.1"
   }
 
@@ -31,8 +31,14 @@ object Deps {
     val akkaActor =
       "com.typesafe.akka" %% "akka-actor" % V.akkaStreamv withSources () withJavadoc ()
 
+    val bitcoinsBitcoindRpc =
+      "org.bitcoin-s" %% "bitcoin-s-bitcoind-rpc" % V.bitcoinsV withSources () withJavadoc ()
+
     val bitcoinsTestKit =
-      "org.bitcoin-s" %% "bitcoin-s-testkit" % V.bitcoinsV //withSources () withJavadoc ()
+      "org.bitcoin-s" %% "bitcoin-s-testkit-core" % V.bitcoinsV withSources () withJavadoc ()
+
+    val bitcoinsCommons =
+      "org.bitcoin-s" %% "bitcoin-s-app-commons" % V.bitcoinsV withSources () withJavadoc ()
 
     val scalaFx =
       "org.scalafx" %% "scalafx" % Deps.V.scalaFxV withSources () withJavadoc ()
@@ -73,7 +79,9 @@ object Deps {
   val gui: List[ModuleID] = List(Compile.akkaActor,
                                  Compile.akkaHttp,
                                  Compile.akkaStream,
+                                 Compile.bitcoinsBitcoindRpc,
                                  Compile.bitcoinsTestKit,
+                                 Compile.bitcoinsCommons,
                                  Compile.scalaFx,
                                  Compile.scodec) ++ Compile.javaFxDeps
 }

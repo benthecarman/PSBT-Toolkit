@@ -1,29 +1,31 @@
 package org.psbttoolkit.gui.psbts.dialog
 
+import org.bitcoins.core.protocol.script._
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
 import scalafx.geometry.Insets
 import scalafx.scene.control.{ButtonType, Dialog, Label, TextField}
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Window
-import scodec.bits.ByteVector
 
-object AddGlobalUnknownDialog {
+object AddWitnessScriptDialog {
 
-  def showAndWait(parentWindow: Window): Option[(ByteVector, ByteVector)] = {
+  def showAndWait(
+      isInput: Boolean,
+      parentWindow: Window): Option[(Int, ScriptWitness)] = {
 
-    val dialog = new Dialog[Option[(ByteVector, ByteVector)]]() {
+    val typeStr = if (isInput) "Input" else "Output"
+
+    val dialog = new Dialog[Option[(Int, ScriptWitness)]]() {
       initOwner(parentWindow)
-      title = s"Add Global Unknown Record"
+      title = s"Add $typeStr Witness Script"
     }
 
     dialog.dialogPane().buttonTypes = Seq(ButtonType.OK, ButtonType.Cancel)
     dialog.dialogPane().stylesheets = GlobalData.currentStyleSheets
 
-    val keyTF = new TextField() {
-      promptText = "Serialized in hex"
-    }
-    val dataTF = new TextField() {
+    val indexTF = new TextField()
+    val witnessScriptTF = new TextField() {
       promptText = "Serialized in hex"
     }
 
@@ -40,26 +42,26 @@ object AddGlobalUnknownDialog {
         nextRow += 1
       }
 
-      addRow("Key", keyTF)
-      addRow("Data", dataTF)
+      addRow(s"$typeStr Index", indexTF)
+      addRow("Witness Script", witnessScriptTF)
     }
 
     // Enable/Disable OK button depending on whether all data was entered.
     val okButton = dialog.dialogPane().lookupButton(ButtonType.OK)
     // Simple validation that sufficient data was entered
-    okButton.disable <== keyTF.text.isEmpty || dataTF.text.isEmpty
+    okButton.disable <== indexTF.text.isEmpty || witnessScriptTF.text.isEmpty
 
     // When the OK button is clicked, convert the result to a T.
     dialog.resultConverter = dialogButton =>
       if (dialogButton == ButtonType.OK) {
         Some(
-          (ByteVector.fromValidHex(keyTF.text.value),
-           ByteVector.fromValidHex(dataTF.text.value)))
+          (indexTF.text.value.toInt,
+           P2WSHWitnessV0(RawScriptPubKey.fromHex(witnessScriptTF.text.value))))
       } else None
 
     dialog.showAndWait() match {
-      case Some(Some((key: ByteVector, data: ByteVector))) =>
-        Some((key, data))
+      case Some(Some((index: Int, spk: ScriptWitness))) =>
+        Some((index, spk))
       case Some(_) | None => None
     }
   }

@@ -2,8 +2,8 @@ package org.psbttoolkit.gui.crypto.dialog
 
 import org.bitcoins.crypto.{ECPrivateKey, NetworkElement}
 import org.psbttoolkit.gui.GlobalData
-import org.psbttoolkit.gui.crypto.types.PublicKeyEncoding._
 import org.psbttoolkit.gui.crypto.types.PublicKeyEncoding
+import org.psbttoolkit.gui.crypto.types.PublicKeyEncoding._
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import scalafx.geometry.Insets

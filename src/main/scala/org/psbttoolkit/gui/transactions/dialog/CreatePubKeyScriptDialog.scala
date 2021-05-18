@@ -8,8 +8,8 @@ import org.bitcoins.core.protocol.script.{
 }
 import org.bitcoins.crypto.ECPublicKey
 import org.psbttoolkit.gui.GlobalData
-import org.psbttoolkit.gui.transactions.types.PubKeyScriptType._
 import org.psbttoolkit.gui.transactions.types.PubKeyScriptType
+import org.psbttoolkit.gui.transactions.types.PubKeyScriptType._
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import scalafx.geometry.Insets

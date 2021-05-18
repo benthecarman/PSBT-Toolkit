@@ -1,13 +1,13 @@
 package org.psbttoolkit.gui
 
-import java.nio.file.Files
-
 import org.bitcoins.core.config.{BitcoinNetworks, MainNet, RegTest, TestNet3}
 import org.bitcoins.core.psbt.PSBT
 import org.psbttoolkit.gui.util.FileUtil
 import scalafx.scene.control._
 import scalafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import scodec.bits.ByteVector
+
+import java.nio.file.Files
 
 object AppMenuBar {
 

@@ -40,6 +40,11 @@ class PSBTButtons(model: PSBTsPaneModel) {
     onAction = _ => model.addInputRedeemScript()
   }
 
+  private val addInputWitnessScript: Button = new Button(
+    "Add Input Witness Script") {
+    onAction = _ => model.addInputWitnessScript()
+  }
+
   private val addInputKeyPath: Button = new Button("Add Input Key Path") {
     onAction = _ => model.addInputKeyPath()
   }
@@ -58,6 +63,7 @@ class PSBTButtons(model: PSBTsPaneModel) {
            addWitnessUTXO,
            addSignature,
            addInputRedeemScript,
+           addInputWitnessScript,
            addInputKeyPath,
            addSigHashType,
            addInputUnknown)

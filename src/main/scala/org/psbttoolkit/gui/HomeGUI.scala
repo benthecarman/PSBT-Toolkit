@@ -90,7 +90,7 @@ object HomeGUI extends JFXApp {
     children = Seq(borderPane, glassPane)
   }
 
-  val homeScene: Scene = new Scene(1000, 800) {
+  val homeScene: Scene = new Scene(1000, 850) {
     root = rootView
     stylesheets = GlobalData.currentStyleSheets
   }

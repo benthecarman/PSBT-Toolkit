@@ -3,7 +3,6 @@ package org.psbttoolkit.gui.psbts.dialog
 import org.bitcoins.core.script.crypto.HashType
 import org.psbttoolkit.gui.GlobalData
 import scalafx.Includes._
-import scalafx.application.Platform
 import scalafx.geometry.Insets
 import scalafx.scene.Node
 import scalafx.scene.control._
