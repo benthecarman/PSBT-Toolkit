@@ -76,12 +76,14 @@ object Deps {
       "org.scodec" %% "scodec-bits" % V.scodecV withSources () withJavadoc ()
   }
 
-  val gui: List[ModuleID] = List(Compile.akkaActor,
-                                 Compile.akkaHttp,
-                                 Compile.akkaStream,
-                                 Compile.bitcoinsBitcoindRpc,
-                                 Compile.bitcoinsTestKit,
-                                 Compile.bitcoinsCommons,
-                                 Compile.scalaFx,
-                                 Compile.scodec) ++ Compile.javaFxDeps
+  val gui: List[ModuleID] = List(
+    Compile.akkaActor,
+    Compile.akkaHttp,
+    Compile.akkaStream,
+    Compile.bitcoinsBitcoindRpc,
+    Compile.bitcoinsTestKit,
+    Compile.bitcoinsCommons,
+    Compile.scalaFx,
+    Compile.scodec
+  ) ++ Compile.javaFxDeps
 }
