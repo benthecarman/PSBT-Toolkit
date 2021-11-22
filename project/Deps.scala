@@ -10,7 +10,7 @@ object Deps {
   }
 
   object V {
-    val akkav = "10.1.12"
+    val akkav = "10.1.15"
     val akkaStreamv = "2.6.6"
     val akkaActorV: String = akkaStreamv
 
@@ -76,12 +76,14 @@ object Deps {
       "org.scodec" %% "scodec-bits" % V.scodecV withSources () withJavadoc ()
   }
 
-  val gui: List[ModuleID] = List(Compile.akkaActor,
-                                 Compile.akkaHttp,
-                                 Compile.akkaStream,
-                                 Compile.bitcoinsBitcoindRpc,
-                                 Compile.bitcoinsTestKit,
-                                 Compile.bitcoinsCommons,
-                                 Compile.scalaFx,
-                                 Compile.scodec) ++ Compile.javaFxDeps
+  val gui: List[ModuleID] = List(
+    Compile.akkaActor,
+    Compile.akkaHttp,
+    Compile.akkaStream,
+    Compile.bitcoinsBitcoindRpc,
+    Compile.bitcoinsTestKit,
+    Compile.bitcoinsCommons,
+    Compile.scalaFx,
+    Compile.scodec
+  ) ++ Compile.javaFxDeps
 }
