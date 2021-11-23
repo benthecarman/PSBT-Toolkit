@@ -15,7 +15,7 @@ object Deps {
     val akkaActorV: String = akkaStreamv
 
     val scodecV = "1.1.17"
-    val scalaFxV = "14-R19"
+    val scalaFxV = "16.0.0-R25"
     val bitcoinsV = "0.6.0"
     val javaFxV = "14.0.1"
   }
