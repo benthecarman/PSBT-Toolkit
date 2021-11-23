@@ -3,7 +3,7 @@ package org.psbttoolkit.gui
 import akka.actor.ActorSystem
 import org.bitcoins.core.config._
 import org.bitcoins.rpc.client.common.BitcoindRpcClient
-import org.bitcoins.rpc.config.BitcoindInstance
+import org.bitcoins.rpc.config.{BitcoindInstance, BitcoindInstanceLocal}
 import org.psbttoolkit.gui.settings.Themes
 import scalafx.beans.property.StringProperty
 
@@ -30,7 +30,7 @@ object GlobalData {
   var network: BitcoinNetwork = MainNet
 
   lazy val bitcoindInstance: BitcoindInstance =
-    BitcoindInstance.fromConfigFile()
+    BitcoindInstanceLocal.fromConfFile()
   lazy val bitcoindRpc: BitcoindRpcClient = BitcoindRpcClient(bitcoindInstance)
 
   lazy val useBitcoind: Boolean = {

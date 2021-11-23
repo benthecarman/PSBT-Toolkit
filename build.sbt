@@ -6,13 +6,13 @@ scalaVersion := "2.13.3"
 
 libraryDependencies ++= Deps.gui
 
-fork in run := true
+run / fork := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 enablePlugins(JavaAppPackaging, GraalVMNativeImagePlugin)
 
-assemblyMergeStrategy in assembly := {
+assembly / assemblyMergeStrategy := {
   case PathList("META-INF", _ @_*) => MergeStrategy.discard
   case _                           => MergeStrategy.first
 }
