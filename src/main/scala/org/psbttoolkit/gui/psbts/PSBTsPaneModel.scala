@@ -83,29 +83,28 @@ class PSBTsPaneModel(resultArea: TextArea) {
 
   def analyzePSBT(): Unit = {
     val resultOpt = getPSBTOpt.map { psbt =>
-      val inputs = psbt.inputMaps.zipWithIndex.map {
-        case (inputMap, index) =>
-          val txIn = psbt.transaction.inputs(index)
-          val vout = txIn.previousOutput.vout.toInt
-          val nextRole = inputMap.nextRole(txIn)
-          val hasUtxo = inputMap.prevOutOpt(vout).isDefined
-          val isFinalized = inputMap.isFinalized
-          val missingSigs = inputMap.missingSignatures(vout)
+      val inputs = psbt.inputMaps.zipWithIndex.map { case (inputMap, index) =>
+        val txIn = psbt.transaction.inputs(index)
+        val vout = txIn.previousOutput.vout.toInt
+        val nextRole = inputMap.nextRole(txIn)
+        val hasUtxo = inputMap.prevOutOpt(vout).isDefined
+        val isFinalized = inputMap.isFinalized
+        val missingSigs = inputMap.missingSignatures(vout)
 
-          if (missingSigs.isEmpty) {
-            Obj(
-              "has_utxo" -> Bool(hasUtxo),
-              "is_final" -> Bool(isFinalized),
-              "next" -> Str(nextRole.shortName)
-            )
-          } else {
-            Obj(
-              "has_utxo" -> Bool(hasUtxo),
-              "is_final" -> Bool(isFinalized),
-              "missing_sigs" -> missingSigs.map(hash => Str(hash.hex)),
-              "next" -> Str(nextRole.shortName)
-            )
-          }
+        if (missingSigs.isEmpty) {
+          Obj(
+            "has_utxo" -> Bool(hasUtxo),
+            "is_final" -> Bool(isFinalized),
+            "next" -> Str(nextRole.shortName)
+          )
+        } else {
+          Obj(
+            "has_utxo" -> Bool(hasUtxo),
+            "is_final" -> Bool(isFinalized),
+            "missing_sigs" -> missingSigs.map(hash => Str(hash.hex)),
+            "next" -> Str(nextRole.shortName)
+          )
+        }
       }
 
       val optionalsJson: Vector[(String, Num)] = {

@@ -162,33 +162,31 @@ object ConstructTransactionDialog {
         val nLockTime = UInt32(lockTimeTF.text.value.toLong)
 
         val inputStrs = inputMap.values
-        val inputs = inputStrs.flatMap {
-          case (txIdStr, voutStr) =>
-            if (txIdStr.text.value.nonEmpty && voutStr.text.value.nonEmpty) {
-              val txIdBE = DoubleSha256DigestBE(txIdStr.text.value)
-              val vout = UInt32(voutStr.text.value.toLong)
-              val outPoint = TransactionOutPoint(txIdBE, vout)
+        val inputs = inputStrs.flatMap { case (txIdStr, voutStr) =>
+          if (txIdStr.text.value.nonEmpty && voutStr.text.value.nonEmpty) {
+            val txIdBE = DoubleSha256DigestBE(txIdStr.text.value)
+            val vout = UInt32(voutStr.text.value.toLong)
+            val outPoint = TransactionOutPoint(txIdBE, vout)
 
-              Some(
-                TransactionInput(outPoint,
-                                 EmptyScriptSignature,
-                                 TransactionConstants.disableRBFSequence))
-            } else {
-              None
-            }
+            Some(
+              TransactionInput(outPoint,
+                               EmptyScriptSignature,
+                               TransactionConstants.disableRBFSequence))
+          } else {
+            None
+          }
         }.toVector
 
         val outputStrs = outputMap.values
-        val outputs = outputStrs.flatMap {
-          case (valueStr, spkStr) =>
-            if (valueStr.text.value.nonEmpty && spkStr.text.value.nonEmpty) {
-              val value = Satoshis(valueStr.text.value.toLong)
-              val spk = ScriptPubKey(spkStr.text.value)
+        val outputs = outputStrs.flatMap { case (valueStr, spkStr) =>
+          if (valueStr.text.value.nonEmpty && spkStr.text.value.nonEmpty) {
+            val value = Satoshis(valueStr.text.value.toLong)
+            val spk = ScriptPubKey(spkStr.text.value)
 
-              Some(TransactionOutput(value, spk))
-            } else {
-              None
-            }
+            Some(TransactionOutput(value, spk))
+          } else {
+            None
+          }
         }.toVector
 
         val transaction =

@@ -13,6 +13,6 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 enablePlugins(JavaAppPackaging, GraalVMNativeImagePlugin)
 
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", _ @ _*) => MergeStrategy.discard
-  case _ => MergeStrategy.first
+  case PathList("META-INF", _ @_*) => MergeStrategy.discard
+  case _                           => MergeStrategy.first
 }
