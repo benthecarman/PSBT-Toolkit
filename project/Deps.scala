@@ -13,7 +13,7 @@ object Deps {
     val akkaV = "10.2.7"
     val akkaStreamV = "2.6.17"
 
-    val scalaFxV = "16.0.0-R25"
+    val scalaFxV = "17.0.1-R26"
     val bitcoinsV = "1.8.0"
     val javaFxV = "14.0.2.1"
   }
