@@ -2,7 +2,7 @@ name := "psbt-toolkit"
 
 version := "0.1.2"
 
-scalaVersion := "2.13.3"
+scalaVersion := "2.13.8"
 
 libraryDependencies ++= Deps.gui
 
